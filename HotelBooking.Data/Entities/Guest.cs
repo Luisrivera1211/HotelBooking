@@ -2,7 +2,7 @@
 
 namespace HotelBooking.Data.Entities
 {
-    public class Guest : AuditEntity
+    public sealed class Guest : AuditEntity
     {
         public string FullName { get; set; }
 
@@ -11,6 +11,10 @@ namespace HotelBooking.Data.Entities
         public string Email { get; set; }
 
         public string Phone { get; set; }
+
+        public List<Reservation> Reservations { get; set; } = new();
+
+        public List<Notification> Notifications { get; set; } = new();
 
     }
 }

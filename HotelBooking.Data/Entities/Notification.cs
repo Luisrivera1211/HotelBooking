@@ -9,12 +9,17 @@ namespace HotelBooking.Data.Entities
 
         public string Message { get; set; }
 
-        public DateTime SentAt { get; set; }
+        public DateTime? SentAt { get; set; }
 
-        public RoomStatus Status { get; set; }
+        public NotificationStatus Status { get; set; }
 
-        public int ReservatioId { get; set; }
+        public int ReservationId { get; set; }
 
         public int GuestId { get; set; }
+
+        public Reservation Reservation { get; set; } = null!;
+
+        public Guest Guest { get; set; } = null!;
+
     }
 }
