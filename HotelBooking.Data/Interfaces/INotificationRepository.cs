@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelBooking.Data.Entities;
 
 namespace HotelBooking.Data.Interfaces
 {
-    internal class INotificationRepository
+    public interface INotificationRepository : IBaseRepository<Notification>
     {
+        Task<List<Notification>> GetByReservationId(int reservationId);
+
+        Task<bool> ExistsSentAsync (int reservationId, string type);
     }
 }

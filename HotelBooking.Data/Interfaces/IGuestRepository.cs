@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using HotelBooking.Data.Entities;
 
 namespace HotelBooking.Data.Interfaces
 {
-    internal class IGuestRepository
+    public interface IGuestRepository : IBaseRepository<Guest>
     {
+        Task<Guest> GetByDocumentAsync(string document);
+
     }
 }

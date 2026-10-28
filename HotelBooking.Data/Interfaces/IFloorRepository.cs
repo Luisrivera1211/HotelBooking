@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelBooking.Data.Entities;
 
 namespace HotelBooking.Data.Interfaces
 {
-    internal class IFloorRepository
+    public interface IFloorRepository : IBaseRepository<Floor>
     {
+        Task<List<Floor>> GetByActiveByHotelAsync(int hotelId);
+        Task<List<Floor>> GetActiveByHotelAsync(int hotelId);
+        Task<bool> ExistsActiveNumberAsync(int hotelId, int number, int? excludeFloorId = null);
     }
 }

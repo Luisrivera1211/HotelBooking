@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelBooking.Data.Entities;
+using HotelBooking.Data.Interfaces;
+using HotelBooking.Data.Context;
 
 namespace HotelBooking.Data.Repositories
 {
-    internal class NotificationRepository
+    public class NotificationRepository : BaseRepository<Notification>, INotificationRepository
     {
+        public NotificationRepository(HotelBookingDbContext context) : base(context)
+        { }
     }
 }

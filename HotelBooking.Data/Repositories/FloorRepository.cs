@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelBooking.Data.Context;
+using HotelBooking.Data.Entities;
+using HotelBooking.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelBooking.Data.Repositories
 {
-    internal class FloorRepository
+    public class FloorRepository : BaseRepository<Floor>, IFloorRepository
     {
+        public FloorRepository(HotelBookingDbContext context) : base(context)
+        { }
+
+
+
     }
 }
