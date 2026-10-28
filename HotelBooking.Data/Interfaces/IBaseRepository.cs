@@ -7,8 +7,8 @@ namespace HotelBooking.Data.Interfaces
     {
         Task<T?> GetEntityByIdAsync(int id);
         Task<List<T>> GetAllAsync();
-        Task<T> SaveEntityAsync(T Entity);
-        Task<T> UpdateEntityAsync(T Entity);
+        Task<T> SaveEntityAsync(T entity);
+        Task<T> UpdateEntityAsync(T entity);
         Task<bool> ExistsAsync(int id);
     }
 }

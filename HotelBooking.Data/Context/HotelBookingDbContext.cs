@@ -64,6 +64,7 @@ namespace HotelBooking.Data.Context
                 }
                 else if (entry.State == EntityState.Modified)
                 {
+                    entry.Entity.UpdatedAt = DateTime.Now;
                     entry.Property(e => e.CreatedAt).IsModified = false;
                 }
             }

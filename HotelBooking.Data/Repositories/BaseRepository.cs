@@ -23,17 +23,17 @@ namespace HotelBooking.Data.Repositories
            return await _context.Set<T>().ToListAsync(); 
         }
 
-     public virtual async Task<T> SaveEntityAsync(T Entity)
+     public virtual async Task<T> SaveEntityAsync(T entity)
         {   
-            _context.Set<T>().Add(Entity);
+            _context.Set<T>().Add(entity);
             await _context.SaveChangesAsync();
-            return Entity;
+            return entity;
         }
-     public virtual async Task<T> UpdateEntityAsync(T Entity)
+     public virtual async Task<T> UpdateEntityAsync(T entity)
         {
-            _context.Set<T>().Update(Entity);
+            _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
-            return Entity;
+            return entity;
         }
         public virtual async Task<bool> ExistsAsync(int id)
         {

@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelBooking.Data.Entities;
+
 
 namespace HotelBooking.Data.Interfaces
 {
-    internal class IReservationRepository
+    public interface IReservationRepository : IBaseRepository<Reservation>
     {
+        Task<List<Reservation>> GetOverlappingAsync(int roomId, DateTime checkIn, DateTime checkOut, int? excludeReservationId = null);
+
+        Task<List<Reservation>> GetByGuestAsync(int guestId);
+
+        Task<Reservation?> GetWithDetailsAsync(int id);
     }
 }
