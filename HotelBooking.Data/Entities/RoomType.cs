@@ -1,5 +1,4 @@
 ﻿using HotelBooking.Data.Base;
-using HotelBooking.Data.Context;
 
 namespace HotelBooking.Data.Entities
 {

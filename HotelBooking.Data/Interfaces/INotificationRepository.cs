@@ -4,8 +4,8 @@ namespace HotelBooking.Data.Interfaces
 {
     public interface INotificationRepository : IBaseRepository<Notification>
     {
-        Task<List<Notification>> GetByReservationId(int reservationId);
+        Task<List<Notification>> GetByReservationIdAsync(int reservationId);
 
-        Task<bool> ExistsSentAsync (int reservationId, string type);
+        Task<bool> ExistsSentAsync(int reservationId, string type);
     }
 }
