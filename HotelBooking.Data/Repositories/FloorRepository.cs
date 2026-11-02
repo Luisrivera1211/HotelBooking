@@ -16,13 +16,21 @@ namespace HotelBooking.Data.Repositories
         }
         public async Task<List<Floor>> GetActiveByHotelAsync(int hotelId)
         {
-            return await _context.Floors.Where(h => h.HotelId == hotelId && h.Hotel.IsActive == true).ToListAsync();
+            return await _context.Floors.Where(h => h.HotelId == hotelId && h.IsActive == true).ToListAsync();
         }
         public async Task<bool> ExistsActiveNumberAsync(int hotelId, int number, int? excludeFloorId = null)
         {
-            return await _context.Floors.Where(h => h.HotelId == hotelId
-            && h.Number == number
-            ).AnyAsync();
+            var query = _context.Floors.Where(f =>
+            f.HotelId == hotelId
+            && f.Number == number
+            && f.IsActive);
+
+           if (excludeFloorId.HasValue)
+            {
+                query = query.Where(f => f.Id != excludeFloorId.Value);
+            }
+
+            return await query.AnyAsync();
         }
     }
 

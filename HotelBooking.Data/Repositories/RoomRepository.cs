@@ -2,6 +2,7 @@
 using HotelBooking.Data.Entities;
 using HotelBooking.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using HotelBooking.Data.Enums;
 
 namespace HotelBooking.Data.Repositories
 {
@@ -21,9 +22,12 @@ namespace HotelBooking.Data.Repositories
         public async Task<List<Room>> GetAvailableAsync(int hotelId, DateTime checkIn, DateTime checkOut, int guests)
         {
             return await _context.Rooms
-                .Where(r => r.Floor.HotelId == hotelId 
-                && r.Reservations.Capacity == guests
-                && !r.Reservations.Any(t => t.CheckIn < checkOut && t.CheckOut > checkIn))
+                .Where(r => r.Floor.HotelId == hotelId
+                && r.RoomType.Capacity >= guests
+                && r.Floor.IsActive
+                && r.Status == RoomStatus.Available
+                && !r.Reservations.Any(t => t.CheckIn < checkOut && t.CheckOut > checkIn && t.Status != ReservationStatus.Cancelled))
+                .Include(r => r.RoomType)
                 .ToListAsync();
 
         }

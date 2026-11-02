@@ -37,6 +37,7 @@ namespace HotelBooking.Data.Repositories
                 .Include(r => r.Room)
                 .Include(r => r.Guest)
                 .Where(r => r.Id == id)
+                .Include(r => r.Room)
                 .FirstOrDefaultAsync();
         }
 
