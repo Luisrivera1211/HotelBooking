@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HotelBooking.Business.DTOs.Availability
+﻿namespace HotelBooking.Business.DTOs.Availability
 {
-    internal class AvailabilitySearchDto
+    public class AvailabilitySearchDto
     {
+        public int HotelId { get; set; }
+        public DateTime CheckIn { get; set; }
+        public DateTime CheckOut { get; set; }
+        public int Capacity { get; set; }
     }
 }

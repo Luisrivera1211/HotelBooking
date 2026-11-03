@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HotelBooking.Business.DTOs.Guest
+﻿namespace HotelBooking.Business.DTOs.Guest
 {
-    internal class CreateGuestDto
+    public class CreateGuestDto
     {
+        public string FullName { get; set; }
+        public string Document { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
     }
 }

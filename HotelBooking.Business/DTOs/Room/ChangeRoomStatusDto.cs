@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelBooking.Data.Enums;
 
 namespace HotelBooking.Business.DTOs.Room
 {
-    internal class ChangeRoomStatusDto
+    public class ChangeRoomStatusDto
     {
+        public RoomStatus Status { get; set; }
     }
 }

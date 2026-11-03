@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelBooking.Data.Enums;
 
 namespace HotelBooking.Business.DTOs.Notification
 {
-    internal class NotificationDto
+    public class NotificationDto
     {
+        public int Id { get; set; }
+        public string Message { get; set; }
+        public DateTime Created { get; set; }
+        public NotificationStatus Status { get; set; }
+        public int ReservationId { get; set; }
     }
 }

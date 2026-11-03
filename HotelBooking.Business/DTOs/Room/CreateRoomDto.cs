@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HotelBooking.Business.DTOs.Room
+﻿namespace HotelBooking.Business.DTOs.Room
 {
-    internal class CreateRoomDto
+    public class CreateRoomDto
     {
+        public int FloorId { get; set; }
+
+        public int RoomTypeId { get; set; }
+
+        public string Number { get; set; }
     }
 }

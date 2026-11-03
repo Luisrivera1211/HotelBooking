@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HotelBooking.Business.DTOs.Floor
+﻿namespace HotelBooking.Business.DTOs.Floor
 {
-    internal class CreateFloorDto
+    public class CreateFloorDto
     {
+        public int Number { get; set; }
+        public int HotelId { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿namespace HotelBooking.Business.DTOs.Hotels
 {
-    internal class CreateHotelDto
+    public class CreateHotelDto
     {
+        public string Name { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
     }
 }

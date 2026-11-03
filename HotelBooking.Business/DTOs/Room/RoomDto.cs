@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelBooking.Data.Enums;
 
 namespace HotelBooking.Business.DTOs.Room
 {
-    internal class RoomDto
+    public class RoomDto
     {
+        public int Id { get; set; }
+        public int FloorId { get; set; }
+        public string Number { get; set; }
+        public RoomStatus Status { get; set; }
+        public string Name { get; set; }
+        public int Capacity { get; set; }
+        public decimal RatePerNight { get; set; }
     }
 }
