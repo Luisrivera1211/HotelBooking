@@ -6,6 +6,6 @@
 
         public int RoomTypeId { get; set; }
 
-        public string Number { get; set; }
+        public string Number { get; set; } = string.Empty;
     }
 }
