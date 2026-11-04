@@ -8,5 +8,9 @@
         public string Message { get; private set; } = string.Empty;
         public ErrorType ErrorType { get; private set; } = ErrorType.None;
         public T? Data { get; private set; }
+
+        private OperationResult() { }
+
+        public
     }
 }

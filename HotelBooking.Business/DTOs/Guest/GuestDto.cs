@@ -1,6 +1,6 @@
 ﻿namespace HotelBooking.Business.DTOs.Guest
 {
-    internal class GuestDto
+    public class GuestDto
     {   
         public int Id { get; set; }
         public string FullName { get; set; }

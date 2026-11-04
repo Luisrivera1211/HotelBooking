@@ -1,4 +1,6 @@
-﻿namespace HotelBooking.Business.DTOs.Reservation
+﻿using HotelBooking.Data.Enums;
+
+namespace HotelBooking.Business.DTOs.Reservation
 {
     public class ReservationDto
     {   
@@ -8,5 +10,8 @@
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
         public int Capacity { get; set; }
+        public decimal Total { get; set; }
+
+        public ReservationStatus Status { get; set; }
     }
 }

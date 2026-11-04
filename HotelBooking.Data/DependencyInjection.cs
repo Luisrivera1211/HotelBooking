@@ -24,6 +24,7 @@ namespace HotelBooking.Data
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IBlockRepository, BlockRepository>();
 
             return services;
         }

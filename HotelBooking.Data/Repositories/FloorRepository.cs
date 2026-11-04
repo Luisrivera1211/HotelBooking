@@ -10,18 +10,18 @@ namespace HotelBooking.Data.Repositories
         public FloorRepository(HotelBookingDbContext context) : base(context)
         { }
 
-        public async Task<List<Floor>> GetByHotelIdAsync(int hotelId)
+        public async Task<List<Floor>> GetByBlockIdAsync(int blockId)
         {
-            return await _context.Floors.Where(h => h.HotelId == hotelId).ToListAsync();
+            return await _context.Floors.Where(h => h.BlockId == blockId).ToListAsync();
         }
-        public async Task<List<Floor>> GetActiveByHotelAsync(int hotelId)
+        public async Task<List<Floor>> GetActiveByBlockAsync(int blockId)
         {
-            return await _context.Floors.Where(h => h.HotelId == hotelId && h.IsActive == true).ToListAsync();
+            return await _context.Floors.Where(h => h.BlockId == blockId && h.IsActive == true).ToListAsync();
         }
-        public async Task<bool> ExistsActiveNumberAsync(int hotelId, int number, int? excludeFloorId = null)
+        public async Task<bool> ExistsActiveNumberAsync(int blockId, int number, int? excludeFloorId = null)
         {
             var query = _context.Floors.Where(f =>
-            f.HotelId == hotelId
+            f.BlockId == blockId
             && f.Number == number
             && f.IsActive);
 

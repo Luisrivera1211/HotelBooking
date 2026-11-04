@@ -7,7 +7,7 @@ namespace HotelBooking.Data.Entities
         public string Name { get; set; } = string.Empty;
         public string Address { get; set; }
         public bool IsActive { get; set; } = true;
-
+        public List<Block> Blocks { get; set; } = new();
         public List<Floor> Floors { get; set; } = new();
     }
 }
