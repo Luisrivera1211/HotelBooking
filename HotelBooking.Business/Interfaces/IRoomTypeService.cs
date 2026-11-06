@@ -4,9 +4,7 @@ namespace HotelBooking.Business.Interfaces
 {
     public interface IRoomTypeService
     {
-        Task<RoomType> CreateRoomTypeAsync(int RoomId);
-
-        Task <RoomType> FindBty
+        Task<RoomType> ObtenerTarifaAplicable(int RoomId);
 
     }
 }

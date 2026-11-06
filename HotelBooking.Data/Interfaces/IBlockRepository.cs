@@ -8,5 +8,7 @@ namespace HotelBooking.Data.Interfaces
 
         Task<Block?> GetByNameAsync(string name);
 
+        Task<bool> ExistsNameInHotelAsync(int hotelId, string name, int? excludeBlockId);
+
     }
 }
