@@ -1,6 +1,6 @@
 ﻿namespace HotelBooking.Business.Interfaces
 {
-    internal class IAvailabilityService
+    public interface IAvailabilityService
     {
     }
 }

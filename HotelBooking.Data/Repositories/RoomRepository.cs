@@ -17,12 +17,12 @@ namespace HotelBooking.Data.Repositories
         }
         public async Task<bool> ExistsNumberInHotelAsync(int hotelId, string number)
         {
-            return await _context.Rooms.Where(h => h.Floor.HotelId == hotelId && h.Number == number).AnyAsync();
+            return await _context.Rooms.Where(h => h.Floor.Block.HotelId == hotelId && h.Number == number).AnyAsync();
         }
         public async Task<List<Room>> GetAvailableAsync(int hotelId, DateTime checkIn, DateTime checkOut, int guests)
         {
             return await _context.Rooms
-                .Where(r => r.Floor.HotelId == hotelId
+                .Where(r => r.Floor.Block.HotelId == hotelId
                 && r.RoomType.Capacity >= guests
                 && r.Floor.IsActive
                 && r.Status == RoomStatus.Available

@@ -3,6 +3,6 @@
     public class CreateFloorDto
     {
         public int Number { get; set; }
-        public int HotelId { get; set; }
+        public int BlockId { get; set; }
     }
 }

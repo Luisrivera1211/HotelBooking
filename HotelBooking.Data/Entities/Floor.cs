@@ -8,9 +8,9 @@ namespace HotelBooking.Data.Entities
 
         public bool IsActive { get; set; } = true; 
 
-        public int HotelId { get; set; }
+        public int BlockId { get; set; }
 
-        public Hotel Hotel { get; set; } = null!;
+        public Block Block { get; set; } = null!;
 
         public List<Room> Rooms { get; set; } = new();
     }

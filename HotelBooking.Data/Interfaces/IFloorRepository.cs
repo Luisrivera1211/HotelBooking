@@ -4,8 +4,8 @@ namespace HotelBooking.Data.Interfaces
 {
     public interface IFloorRepository : IBaseRepository<Floor>
     {
-        Task<List<Floor>> GetByHotelIdAsync(int hotelId);
-        Task<List<Floor>> GetActiveByHotelAsync(int hotelId);
-        Task<bool> ExistsActiveNumberAsync(int hotelId, int number, int? excludeFloorId = null);
+        Task<List<Floor>> GetByBlockIdAsync(int hotelId);
+        Task<List<Floor>> GetActiveByBlockAsync(int blockId);
+        Task<bool> ExistsActiveNumberAsync(int blockId, int number, int? excludeFloorId = null);
     }
 }

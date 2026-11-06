@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelBooking.Data.Entities;
 
 namespace HotelBooking.Business.Interfaces
 {
-    internal interface IRoomTypeService
+    public interface IRoomTypeService
     {
+        Task<RoomType> CreateRoomTypeAsync(int RoomId);
+
+        Task <RoomType> FindBty
+
     }
 }

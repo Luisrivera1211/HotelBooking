@@ -1,6 +1,6 @@
 ﻿namespace HotelBooking.Business.Interfaces
-{
-    public class IHotelService
+{   
+    public interface IHotelService
     {
 
     }
