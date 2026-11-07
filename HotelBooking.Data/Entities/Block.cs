@@ -6,6 +6,7 @@ namespace HotelBooking.Data.Entities
     {
         public string Name { get; set; }
         public int HotelId { get; set; }
-
+        public bool IsActive { get; set; } = true;
+        public List<Floor> Floors { get; set; } = new();
     }
 }
