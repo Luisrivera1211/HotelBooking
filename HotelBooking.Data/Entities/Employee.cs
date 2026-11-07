@@ -9,6 +9,6 @@ namespace HotelBooking.Data.Entities
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public EmployeeRole Role { get; set; }
-    
+   
     }
 }
