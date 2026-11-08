@@ -2,7 +2,7 @@
 {
     public enum EmployeeRole
     {
-        Administrador,
-        Recepcionista,
+        Administrator,
+        Receptionist
     }
 }

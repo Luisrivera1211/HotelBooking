@@ -5,9 +5,9 @@ namespace HotelBooking.Data.Entities
 {
     public sealed class Notification : AuditEntity
     {
-        public string Type { get; set; }
+        public NotificationType Type { get; set; }
 
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
 
         public DateTime? SentAt { get; set; }
 

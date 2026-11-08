@@ -1,11 +1,12 @@
 ﻿using HotelBooking.Data.Entities;
+using HotelBooking.Data.Results;
 
 namespace HotelBooking.Data.Interfaces
 {
     public interface IFloorRepository : IBaseRepository<Floor>
     {
-        Task<List<Floor>> GetByBlockIdAsync(int hotelId);
-        Task<List<Floor>> GetActiveByBlockAsync(int blockId);
-        Task<bool> ExistsActiveNumberAsync(int blockId, int number, int? excludeFloorId = null);
+        Task<OperationResult<List<Floor>>> GetByBlockIdAsync(int blockId);
+        Task<OperationResult<List<Floor>>> GetActiveByBlockAsync(int blockId);
+        Task<OperationResult<bool>> ExistsActiveNumberAsync(int blockId, int number, int? excludeFloorId = null);
     }
 }

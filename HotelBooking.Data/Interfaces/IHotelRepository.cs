@@ -1,12 +1,13 @@
 ﻿using HotelBooking.Data.Entities;
+using HotelBooking.Data.Results;
 
 namespace HotelBooking.Data.Interfaces
 {
     public interface IHotelRepository : IBaseRepository<Hotel>
     {
-        Task<List<Hotel>> GetActiveHotelsAsync();
+        Task <OperationResult<List<Hotel>>> GetActiveHotelsAsync();
 
-        Task<Hotel?> GetByNameAsync(string name);
+        Task <OperationResult<Hotel?>> GetByNameAsync(string name);
 
     }
 }

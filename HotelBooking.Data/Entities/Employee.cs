@@ -3,11 +3,11 @@ using HotelBooking.Data.Enums;
 
 namespace HotelBooking.Data.Entities
 {
-    public class Employee : AuditEntity
+    public sealed class Employee : AuditEntity
     {
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
         public EmployeeRole Role { get; set; }
    
     }

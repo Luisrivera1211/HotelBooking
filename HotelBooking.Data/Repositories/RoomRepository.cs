@@ -1,8 +1,10 @@
 ﻿using HotelBooking.Data.Context;
 using HotelBooking.Data.Entities;
-using HotelBooking.Data.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using HotelBooking.Data.Enums;
+using HotelBooking.Data.Interfaces;
+using HotelBooking.Data.Results;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace HotelBooking.Data.Repositories
 {
@@ -11,25 +13,86 @@ namespace HotelBooking.Data.Repositories
         public RoomRepository(HotelBookingDbContext context) : base(context)
         { }
 
-        public async Task<List<Room>> GetByFloorAsync(int floorId)
+        protected override string? Validate(Room room)
         {
-            return await _context.Rooms.Where(f => f.FloorId == floorId).ToListAsync();
+            if (string.IsNullOrWhiteSpace(room.Number))
+                return DataMessages.Required("Número");
+            if (room.Number.Length > 50)
+                return DataMessages.TooLong("Número", 50);
+            return null;
         }
-        public async Task<bool> ExistsNumberInHotelAsync(int hotelId, string number)
-        {
-            return await _context.Rooms.Where(h => h.Floor.Block.HotelId == hotelId && h.Number == number).AnyAsync();
-        }
-        public async Task<List<Room>> GetAvailableAsync(int hotelId, DateTime checkIn, DateTime checkOut, int guests)
-        {
-            return await _context.Rooms
-                .Where(r => r.Floor.Block.HotelId == hotelId
-                && r.RoomType.Capacity >= guests
-                && r.Floor.IsActive
-                && r.Status == RoomStatus.Available
-                && !r.Reservations.Any(t => t.CheckIn < checkOut && t.CheckOut > checkIn && t.Status != ReservationStatus.Cancelled))
-                .Include(r => r.RoomType)
-                .ToListAsync();
 
+        public async Task<OperationResult<List<Room>>> GetByFloorAsync(int floorId)
+        {
+            try
+            {
+                if (floorId <= 0)
+                    return OperationResult<List<Room>>.Validation(DataMessages.InvalidId);
+
+                var rooms = await _context.Rooms
+                    .AsNoTracking()
+                    .Where(r => r.FloorId == floorId)
+                    .ToListAsync();
+                return OperationResult<List<Room>>.Ok(rooms);
+            }
+            catch (Exception)
+            {
+                return OperationResult<List<Room>>.Unexpected(DataMessages.QueryError);
+            }
+        }
+
+        public async Task<OperationResult<bool>> ExistsNumberInHotelAsync(int hotelId, string number, int? excludeRoomId = null)
+        {
+            try
+            {
+                if (hotelId <= 0)
+                    return OperationResult<bool>.Validation(DataMessages.InvalidId);
+                if (string.IsNullOrWhiteSpace(number))
+                    return OperationResult<bool>.Validation(DataMessages.Required("Numero"));
+
+                var query = _context.Rooms.Where(r => r.Floor.Block.HotelId == hotelId && r.Number == number.Trim());
+
+                if (excludeRoomId.HasValue)
+                    query = query.Where(r => r.Id != excludeRoomId.Value);
+
+                return OperationResult<bool>.Ok(await query.AnyAsync());
+            }
+            catch (Exception)
+            {
+                return OperationResult<bool>.Unexpected(DataMessages.QueryError);
+            }
+        }
+        
+
+        public async Task<OperationResult<List<Room>>> GetAvailableAsync(int hotelId, DateTime checkIn, DateTime checkOut, int guests)
+        {
+            try
+            {
+                if (hotelId <= 0)
+                    return OperationResult<List<Room>>.Validation(DataMessages.InvalidId);
+                if (checkOut <= checkIn)
+                    return OperationResult<List<Room>>.Validation("La fecha de salida debe ser posterior a la de entrada.");  
+                if (guests <= 0)
+                    return OperationResult<List<Room>>.Validation(DataMessages.MustBePositive("Cantidad de huéspedes"));
+
+                var rooms = await _context.Rooms
+                    .AsNoTracking()
+                    .Include(r => r.RoomType)
+                    .Where(r => r.Floor.Block.HotelId == hotelId
+                    && r.Floor.IsActive
+                    && r.RoomType.Capacity >= guests
+                    && r.Status == RoomStatus.Available
+                    && !r.Reservations.Any(x => x.CheckIn < checkOut
+                                           && x.CheckOut > checkIn
+                                           && x.Status != ReservationStatus.Cancelled))
+                    .ToListAsync();
+
+                return OperationResult<List<Room>>.Ok(rooms);
+            }
+            catch (Exception)
+            {
+                return OperationResult<List<Room>>.Unexpected(DataMessages.QueryError);
+            }
         }
     }
 }

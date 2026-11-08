@@ -1,6 +1,7 @@
 ﻿using HotelBooking.Data.Context;
 using HotelBooking.Data.Entities;
 using HotelBooking.Data.Interfaces;
+using HotelBooking.Data.Results;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelBooking.Data.Repositories
@@ -10,29 +11,75 @@ namespace HotelBooking.Data.Repositories
         public BlockRepository(HotelBookingDbContext context) : base(context)
         { }
 
-        public async Task<List<Block>> GetBlockAsync()
+        protected override string? Validate(Block block)
         {
-            return await _context.Blocks.ToListAsync();
+            if (string.IsNullOrWhiteSpace(block.Name))
+                return DataMessages.Required("Nombre");
+            if (block.Name.Length > 50)
+                return DataMessages.TooLong("Nombre", 50);
+            return null;
         }
 
-        public async Task<Block?> GetByNameAsync(string name)
-        {
-            return await _context.Blocks.FirstOrDefaultAsync(x => x.Name == name);
-        }
 
-        public async Task<bool> ExistsActiveNumbebrAsync(int blockId, int number, int? excludeFloorId = null)
+        public async Task<OperationResult<List<Block>>> GetByHotelIdAsync(int hotelId)
         {
-            var query = _context.Blocks.Where(b =>
-            b.Block == blockId
-            && f.Number == number
-            && f.IsActive);
-
-            if (excludeFloorId.HasValue)
+            try
             {
-                query = query.Where(f => f.Id != excludeFloorId.Value);
-            }
+                if (hotelId <= 0)
+                    return OperationResult<List<Block>>.Validation(DataMessages.InvalidId);
 
-            return await query.AnyAsync();
+                var blocks = await _context.Blocks
+                    .AsNoTracking()
+                    .Where(b => b.HotelId == hotelId)
+                    .ToListAsync();
+                return OperationResult<List<Block>>.Ok(blocks);
+            }
+            catch (Exception)
+            {
+                return OperationResult<List<Block>>.Unexpected(DataMessages.QueryError);
+            }
+        }
+
+        public async Task<OperationResult<Block?>> GetByNameAsync(int hotelId, string name)
+        {
+            try
+            {
+                if (hotelId <= 0)
+                    return OperationResult<Block?>.Validation(DataMessages.InvalidId);
+                if (string.IsNullOrWhiteSpace(name))
+                    return OperationResult<Block?>.Validation(DataMessages.Required("Nombre"));
+
+                var block = await _context.Blocks
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(b => b.HotelId == hotelId && b.Name == name.Trim());
+                return OperationResult<Block?>.Ok(block);
+            }
+            catch (Exception)
+            {
+                return OperationResult<Block?>.Unexpected(DataMessages.QueryError);
+            }
+        }
+
+        public async Task<OperationResult<bool>> ExistsNameInHotelAsync(int hotelId, string name, int? excludeBlockId = null)
+        {
+            try
+            {
+                if (hotelId <= 0)
+                    return OperationResult<bool>.Validation(DataMessages.InvalidId);
+                if (string.IsNullOrWhiteSpace(name))
+                    return OperationResult<bool>.Validation(DataMessages.Required("Nombre"));
+
+                var query = _context.Blocks.Where(b => b.HotelId == hotelId && b.Name == name.Trim());
+
+                if (excludeBlockId.HasValue)
+                    query = query.Where(b => b.Id != excludeBlockId.Value);
+
+                return OperationResult<bool>.Ok(await query.AnyAsync());
+            }
+            catch (Exception)
+            {
+                return OperationResult<bool>.Unexpected(DataMessages.QueryError);
+            }
         }
     }
 }

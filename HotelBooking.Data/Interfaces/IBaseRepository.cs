@@ -1,14 +1,14 @@
 ﻿using HotelBooking.Data.Base;
-
+using HotelBooking.Data.Results;
 
 namespace HotelBooking.Data.Interfaces
 {
     public interface IBaseRepository<T> where T : AuditEntity
     {
-        Task<T?> GetEntityByIdAsync(int id);
-        Task<List<T>> GetAllAsync();
-        Task<T> SaveEntityAsync(T entity);
-        Task<T> UpdateEntityAsync(T entity);
-        Task<bool> ExistsAsync(int id);
+        Task<OperationResult<T?>> GetEntityByIdAsync(int id);
+        Task<OperationResult<List<T>>> GetAllAsync();
+        Task<OperationResult<T>> SaveEntityAsync(T entity);
+        Task<OperationResult<T>> UpdateEntityAsync(T entity);
+        Task<OperationResult<bool>> ExistsAsync(int id);
     }
 }
