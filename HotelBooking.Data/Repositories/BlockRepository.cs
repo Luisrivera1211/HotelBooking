@@ -22,8 +22,8 @@ namespace HotelBooking.Data.Repositories
 
         public async Task<bool> ExistsActiveNumbebrAsync(int blockId, int number, int? excludeFloorId = null)
         {
-            var query = _context.N.Where(f =>
-            f.BlockId == blockId
+            var query = _context.Blocks.Where(b =>
+            b.Block == blockId
             && f.Number == number
             && f.IsActive);
 
