@@ -10,6 +10,6 @@ namespace HotelBooking.Business.DTOs.Notification
         public NotificationStatus Status { get; set; }
         public int ReservationId { get; set; }
         public int GuestCount { get; set; }
-        public string Type { get; set; } = string.Empty;
+        public NotificationType Type { get; set; }
     }
 }
