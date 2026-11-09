@@ -9,7 +9,7 @@ namespace HotelBooking.Business.Interfaces
 
         Task<OperationResult<BlockDto>> GetByIdAsync(int id);
 
-        Task<OperationResult<List<BlockDto>>> GetAllAsync(int hotelId);
+        Task<OperationResult<List<BlockDto>>> GetByHotelAsync(int hotelId);
 
         Task<OperationResult<BlockDto>> UpdateAsync(int id, CreateBlockDto dto);
 

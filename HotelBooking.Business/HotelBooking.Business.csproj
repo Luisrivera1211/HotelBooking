@@ -10,4 +10,8 @@
     <ProjectReference Include="..\HotelBooking.Data\HotelBooking.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Enums\" />
+  </ItemGroup>
+
 </Project>
