@@ -6,6 +6,7 @@ namespace HotelBooking.Business.DTOs.Room
     {
         public int Id { get; set; }
         public int FloorId { get; set; }
+        public int RoomTypeId { get; set; }
         public string Number { get; set; } = string.Empty;
         public RoomStatus Status { get; set; }
         public string RoomTypeName { get; set; } = string.Empty;

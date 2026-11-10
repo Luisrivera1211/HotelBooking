@@ -1,14 +1,12 @@
-﻿using HotelBooking.Data.Entities;
+﻿using HotelBooking.Business.DTOs.Notification;
+using HotelBooking.Data.Enums;
+using HotelBooking.Data.Results;
 
 namespace HotelBooking.Business.Interfaces
 {
     public interface INotificationService
     {
-        Task<Notification> GenerateNotificationAsync();
-        Task<Notification> SendNotificationAsync();
-        Task<Notification> MarkAsSent();
-        Task<Notification> MarkAsFailed();
-        Task<Notification> AvoidDuplicatedAsync();
-
+        Task<OperationResult<NotificationDto>> NotifyAsync(int reservationId, NotificationType type);
+        Task<OperationResult<List<NotificationDto>>> GetByReservationAsync(int reservationId);
     }
 }
