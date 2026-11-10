@@ -10,4 +10,16 @@
     <ProjectReference Include="..\HotelBooking.Business\HotelBooking.Business.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Account\" />
+    <Folder Include="Views\Availability\" />
+    <Folder Include="Views\Blocks\" />
+    <Folder Include="Views\Floors\" />
+    <Folder Include="Views\Guests\" />
+    <Folder Include="Views\Hotels\" />
+    <Folder Include="Views\RoomTypes\" />
+    <Folder Include="Views\Rooms\" />
+    <Folder Include="Views\Reservations\" />
+  </ItemGroup>
+
 </Project>

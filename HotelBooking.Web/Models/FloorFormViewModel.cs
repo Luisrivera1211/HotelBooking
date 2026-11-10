@@ -1,0 +1,6 @@
+﻿namespace HotelBooking.Web.Models
+{
+    public class FloorFormViewModel
+    {
+    }
+}
