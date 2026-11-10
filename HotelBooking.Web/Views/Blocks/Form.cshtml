@@ -1,0 +1,13 @@
+﻿@model BlockFormViewModel
+<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+<form asp-action="@ViewData["FormAction"]" asp-route-id="@ViewData["Id"]" method="post" class="card card-body shadow-sm" style="max-width:600px">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <input asp-for="HotelId" type="hidden" />
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Nombre del bloque</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div><button class="btn btn-primary">Guardar</button> <a asp-action="Index" asp-route-hotelId="@Model.HotelId" class="btn btn-link">Cancelar</a></div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

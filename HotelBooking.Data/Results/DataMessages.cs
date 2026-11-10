@@ -12,7 +12,7 @@
         public const string Updated = "Registro actualizado correctamente.";
         public const string ConstraintViolation =
             "No se pudo guardar. Verifique que los datos no estén duplicados y que los registros relacionados existan.";
-        public const string InvalidDate = "La fecha de salida debe ser posterior a la fecha de entrada.";
+        public const string InvalidDate = "La fecha de salida debe ser posterior a la de entrada.";
 
         public static string Required(string field) => $"El campo {field} es obligatorio.";
         public static string TooLong(string field, int max) => $"El campo {field} no puede superar {max} caracteres.";

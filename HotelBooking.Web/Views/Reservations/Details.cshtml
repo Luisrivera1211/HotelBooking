@@ -1,0 +1,51 @@
+﻿@model ReservationDetailsViewModel
+@{
+    var r = Model.Reservation;
+    var editable = r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.Confirmed;
+    ViewData["Title"] = $"Reserva #{r.Id}";
+}
+<nav aria-label="breadcrumb"><ol class="breadcrumb">
+    <li class="breadcrumb-item"><a asp-controller="Guests" asp-action="Details" asp-route-id="@r.GuestId">@r.GuestName</a></li>
+    <li class="breadcrumb-item active">Reserva #@r.Id</li>
+</ol></nav>
+<div class="card card-body shadow-sm mb-4">
+    <div class="d-flex justify-content-between">
+        <h1 class="h4">Reserva #@r.Id <span class="badge bg-@r.Status.Badge()">@r.Status.Text()</span></h1>
+        @if (editable)
+        {
+            <div class="d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-outline-primary btn-sm">Modificar</a>
+                @if (r.Status == ReservationStatus.Pending)
+                {
+                    <form asp-action="Confirm" asp-route-id="@r.Id" method="post"><button class="btn btn-success btn-sm">Confirmar</button></form>
+                }
+                <form asp-action="Cancel" asp-route-id="@r.Id" method="post" onsubmit="return confirm('¿Cancelar esta reserva?');">
+                    <button class="btn btn-outline-danger btn-sm">Cancelar reserva</button>
+                </form>
+            </div>
+        }
+    </div>
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Huésped</dt><dd class="col-sm-9">@r.GuestName</dd>
+        <dt class="col-sm-3">Habitación</dt><dd class="col-sm-9">@r.RoomNumber</dd>
+        <dt class="col-sm-3">Entrada</dt><dd class="col-sm-9">@r.CheckIn.ToString("dd/MM/yyyy")</dd>
+        <dt class="col-sm-3">Salida</dt><dd class="col-sm-9">@r.CheckOut.ToString("dd/MM/yyyy")</dd>
+        <dt class="col-sm-3">Huéspedes</dt><dd class="col-sm-9">@r.GuestCount</dd>
+        <dt class="col-sm-3">Total</dt><dd class="col-sm-9">@r.Total.ToString("C")</dd>
+    </dl>
+</div>
+<h2 class="h5">Notificaciones</h2>
+<table class="table table-striped bg-white align-middle">
+    <thead><tr><th>Tipo</th><th>Mensaje</th><th>Estado</th><th>Enviada</th></tr></thead>
+    <tbody>
+    @foreach (var n in Model.Notifications)
+    {
+        <tr>
+            <td>@n.Type.Text()</td><td>@n.Message</td>
+            <td><span class="badge bg-@(n.Status == NotificationStatus.Sent ? "success" : n.Status == NotificationStatus.Failed ? "danger" : "warning text-dark")">@n.Status.Text()</span></td>
+            <td>@(n.SentAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+        </tr>
+    }
+    @if (!Model.Notifications.Any()) { <tr><td colspan="4" class="text-center text-muted">Sin notificaciones.</td></tr> }
+    </tbody>
+</table>

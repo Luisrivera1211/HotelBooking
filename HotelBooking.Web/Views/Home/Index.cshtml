@@ -1,8 +1,29 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+﻿@{ ViewData["Title"] = "Inicio"; }
+<h1 class="h3 mb-4">Bienvenido, @User.Identity!.Name</h1>
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100"><div class="card-body">
+            <h2 class="h5">Disponibilidad</h2>
+            <p class="text-muted">Busque habitaciones libres por fechas y cree la reserva.</p>
+            <a asp-controller="Availability" asp-action="Index" class="btn btn-primary">Buscar</a>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100"><div class="card-body">
+            <h2 class="h5">Huéspedes</h2>
+            <p class="text-muted">Registre huéspedes y consulte sus reservas.</p>
+            <a asp-controller="Guests" asp-action="Index" class="btn btn-primary">Ver huéspedes</a>
+        </div></div>
+    </div>
+    @if (User.IsInRole(Roles.Administrator))
+    {
+        <div class="col-md-4">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h5">Administración</h2>
+                <p class="text-muted">Hoteles, bloques, pisos, habitaciones y tipos.</p>
+                <a asp-controller="Hotels" asp-action="Index" class="btn btn-dark">Hoteles</a>
+                <a asp-controller="RoomTypes" asp-action="Index" class="btn btn-outline-dark">Tipos</a>
+            </div></div>
+        </div>
+    }
 </div>

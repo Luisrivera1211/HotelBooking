@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using HotelBooking.Data.Base;
-using HotelBooking.Data.Interfaces;
+﻿using HotelBooking.Data.Base;
 using HotelBooking.Data.Context;
+using HotelBooking.Data.Interfaces;
 using HotelBooking.Data.Results;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelBooking.Data.Repositories
 {
@@ -11,16 +11,15 @@ namespace HotelBooking.Data.Repositories
         protected readonly HotelBookingDbContext _context;
 
         public BaseRepository(HotelBookingDbContext context)
-         {
+        {
             _context = context;
-         }
+        }
 
-     protected virtual string? Validate(T entity) => null;
+        // Cada repositorio concreto lo sobrescribe con sus reglas de campos.
+        // null = válido; un texto = el error.
+        protected virtual string? Validate(T entity) => null;
 
-        protected static OperationResult<TResult> Failure<TResult>(string message) =>
-               new() { Success = false, Message = message };
-
-     public async Task<OperationResult<T?>> GetEntityByIdAsync(int id)
+        public async Task<OperationResult<T>> GetEntityByIdAsync(int id)
         {
             try
             {
@@ -29,9 +28,8 @@ namespace HotelBooking.Data.Repositories
 
                 var entity = await _context.Set<T>().FindAsync(id);
                 return entity is null
-                ? OperationResult<T>.NotFound(DataMessages.NotFound)
-                : OperationResult<T>.Ok(entity);
-
+                    ? OperationResult<T>.NotFound(DataMessages.NotFound)
+                    : OperationResult<T>.Ok(entity);
             }
             catch (Exception)
             {
@@ -39,7 +37,7 @@ namespace HotelBooking.Data.Repositories
             }
         }
 
-     public async Task<OperationResult<List<T>>> GetAllAsync()
+        public async Task<OperationResult<List<T>>> GetAllAsync()
         {
             try
             {
@@ -65,7 +63,7 @@ namespace HotelBooking.Data.Repositories
 
                 await _context.Set<T>().AddAsync(entity);
                 await _context.SaveChangesAsync();
-                return OperationResult<T>.Ok(entity, "Registro guardado correctamente.");
+                return OperationResult<T>.Ok(entity, DataMessages.Saved);
             }
             catch (DbUpdateException)
             {
@@ -77,7 +75,7 @@ namespace HotelBooking.Data.Repositories
             }
         }
 
-     public virtual async Task<OperationResult<T>> UpdateEntityAsync(T entity)
+        public virtual async Task<OperationResult<T>> UpdateEntityAsync(T entity)
         {
             try
             {
@@ -85,7 +83,6 @@ namespace HotelBooking.Data.Repositories
                     return OperationResult<T>.Validation(DataMessages.EntityRequired);
                 if (entity.Id <= 0)
                     return OperationResult<T>.Validation(DataMessages.InvalidId);
-
 
                 var error = Validate(entity);
                 if (error is not null)
@@ -96,7 +93,7 @@ namespace HotelBooking.Data.Repositories
 
                 _context.Set<T>().Update(entity);
                 await _context.SaveChangesAsync();
-                return OperationResult<T>.Ok(entity, "Registro actualizado correctamente.");
+                return OperationResult<T>.Ok(entity, DataMessages.Updated);
             }
             catch (DbUpdateException)
             {

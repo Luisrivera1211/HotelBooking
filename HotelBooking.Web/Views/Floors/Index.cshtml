@@ -1,0 +1,36 @@
+﻿@model List<HotelBooking.Business.DTOs.Floor.FloorDto>
+@{
+    var block = (HotelBooking.Business.DTOs.Block.BlockDto)ViewData["Block"]!;
+    ViewData["Title"] = "Pisos";
+}
+<nav aria-label="breadcrumb"><ol class="breadcrumb">
+    <li class="breadcrumb-item"><a asp-controller="Hotels" asp-action="Index">Hoteles</a></li>
+    <li class="breadcrumb-item"><a asp-controller="Blocks" asp-action="Index" asp-route-hotelId="@block.HotelId">Bloques</a></li>
+    <li class="breadcrumb-item active">@block.Name</li>
+</ol></nav>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Pisos del bloque @block.Name</h1>
+    <a asp-action="Create" asp-route-blockId="@block.Id" class="btn btn-primary">Nuevo piso</a>
+</div>
+<table class="table table-striped bg-white align-middle">
+    <thead><tr><th>Número</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+    <tbody>
+    @foreach (var f in Model)
+    {
+        <tr>
+            <td>Piso @f.Number</td>
+            <td><span class="badge bg-@(f.IsActive ? "success" : "secondary")">@(f.IsActive ? "Activo" : "Inactivo")</span></td>
+            <td class="text-end">
+                <a asp-controller="Rooms" asp-action="Index" asp-route-floorId="@f.Id" class="btn btn-sm btn-outline-dark">Habitaciones</a>
+                <form asp-action="SetActive" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@f.Id" />
+                    <input type="hidden" name="blockId" value="@block.Id" />
+                    <input type="hidden" name="isActive" value="@((!f.IsActive).ToString().ToLower())" />
+                    <button class="btn btn-sm btn-outline-@(f.IsActive ? "danger" : "success")">@(f.IsActive ? "Desactivar" : "Activar")</button>
+                </form>
+            </td>
+        </tr>
+    }
+    @if (!Model.Any()) { <tr><td colspan="3" class="text-center text-muted">Este bloque no tiene pisos.</td></tr> }
+    </tbody>
+</table>

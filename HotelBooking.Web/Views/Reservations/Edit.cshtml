@@ -1,0 +1,26 @@
+﻿@model ReservationEditViewModel
+<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+<form asp-action="Edit" asp-route-id="@ViewData["Id"]" method="post" class="card card-body shadow-sm" style="max-width:640px">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <input asp-for="RoomId" type="hidden" />
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="CheckIn" class="form-label">Entrada</label>
+            <input asp-for="CheckIn" class="form-control" />
+            <span asp-validation-for="CheckIn" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="CheckOut" class="form-label">Salida</label>
+            <input asp-for="CheckOut" class="form-control" />
+            <span asp-validation-for="CheckOut" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="GuestCount" class="form-label">Huéspedes</label>
+            <input asp-for="GuestCount" class="form-control" type="number" min="1" />
+            <span asp-validation-for="GuestCount" class="text-danger"></span>
+        </div>
+    </div>
+    <p class="text-muted small">Para cambiar de habitación, cancele esta reserva y cree una nueva desde Disponibilidad.</p>
+    <div><button class="btn btn-primary">Guardar cambios</button> <a asp-action="Details" asp-route-id="@ViewData["Id"]" class="btn btn-link">Cancelar</a></div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

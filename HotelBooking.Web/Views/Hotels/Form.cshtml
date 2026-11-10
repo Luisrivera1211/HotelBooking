@@ -1,0 +1,17 @@
+﻿@model HotelFormViewModel
+<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+<form asp-action="@ViewData["FormAction"]" asp-route-id="@ViewData["Id"]" method="post" class="card card-body shadow-sm" style="max-width:600px">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Nombre</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Address" class="form-label">Dirección</label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <div><button class="btn btn-primary">Guardar</button> <a asp-action="Index" class="btn btn-link">Cancelar</a></div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

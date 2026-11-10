@@ -25,8 +25,7 @@ namespace HotelBooking.Data.Repositories
                 if (blockId <= 0)
                     return OperationResult<List<Floor>>.Validation(DataMessages.InvalidId);
 
-                var floors = await _context.Floors
-                    .AsNoTracking()
+                var floors = await _context.Floors.AsNoTracking()
                     .Where(f => f.BlockId == blockId)
                     .ToListAsync();
                 return OperationResult<List<Floor>>.Ok(floors);
@@ -36,36 +35,16 @@ namespace HotelBooking.Data.Repositories
                 return OperationResult<List<Floor>>.Unexpected(DataMessages.QueryError);
             }
         }
-            
-        public async Task<OperationResult<List<Floor>>> GetActiveByBlockAsync(int blockId)
-        {
-            try
-            {
-                if (blockId <= 0)
-                    return OperationResult<List<Floor>>.Validation(DataMessages.InvalidId);
-
-                var floors = await _context.Floors
-                  .AsNoTracking()
-                  .Where(f => f.BlockId == blockId && f.IsActive)
-                  .ToListAsync();
-                return OperationResult<List<Floor>>.Ok(floors);
-            }
-            catch (Exception)
-            {
-                return OperationResult<List<Floor>>.Unexpected (DataMessages.QueryError);
-            }
-        }
 
         public async Task<OperationResult<bool>> ExistsActiveNumberAsync(int blockId, int number, int? excludeFloorId = null)
         {
             try
             {
-               if (blockId <= 0)
+                if (blockId <= 0)
                     return OperationResult<bool>.Validation(DataMessages.InvalidId);
-                if (number <= 0)
-                    return OperationResult<bool>.Validation(DataMessages.MustBePositive("Numero"));
 
-                var query = _context.Floors.Where(f => f.BlockId == blockId && f.Number == number && f.IsActive);
+                var query = _context.Floors.Where(f =>
+                    f.BlockId == blockId && f.Number == number && f.IsActive);
 
                 if (excludeFloorId.HasValue)
                     query = query.Where(f => f.Id != excludeFloorId.Value);
@@ -76,9 +55,6 @@ namespace HotelBooking.Data.Repositories
             {
                 return OperationResult<bool>.Unexpected(DataMessages.QueryError);
             }
-
         }
     }
-
 }
-

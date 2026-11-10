@@ -20,7 +20,6 @@ namespace HotelBooking.Data.Repositories
             return null;
         }
 
-
         public async Task<OperationResult<List<Block>>> GetByHotelIdAsync(int hotelId)
         {
             try
@@ -37,26 +36,6 @@ namespace HotelBooking.Data.Repositories
             catch (Exception)
             {
                 return OperationResult<List<Block>>.Unexpected(DataMessages.QueryError);
-            }
-        }
-
-        public async Task<OperationResult<Block?>> GetByNameAsync(int hotelId, string name)
-        {
-            try
-            {
-                if (hotelId <= 0)
-                    return OperationResult<Block?>.Validation(DataMessages.InvalidId);
-                if (string.IsNullOrWhiteSpace(name))
-                    return OperationResult<Block?>.Validation(DataMessages.Required("Nombre"));
-
-                var block = await _context.Blocks
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(b => b.HotelId == hotelId && b.Name == name.Trim());
-                return OperationResult<Block?>.Ok(block);
-            }
-            catch (Exception)
-            {
-                return OperationResult<Block?>.Unexpected(DataMessages.QueryError);
             }
         }
 

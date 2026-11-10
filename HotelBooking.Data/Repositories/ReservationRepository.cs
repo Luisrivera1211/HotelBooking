@@ -26,6 +26,7 @@ namespace HotelBooking.Data.Repositories
             return null;
         }
 
+        // RNF-006: la comprobación de solapamiento y el guardado ocurren en la misma transacción.
         public override async Task<OperationResult<Reservation>> SaveEntityAsync(Reservation reservation)
         {
             try
@@ -96,12 +97,10 @@ namespace HotelBooking.Data.Repositories
                 if (checkOut <= checkIn)
                     return OperationResult<List<Reservation>>.Validation(DataMessages.InvalidDate);
 
-                var query = _context.Reservations
-                    .AsNoTracking()
-                    .Where(r => r.RoomId == roomId
-                        && r.CheckIn < checkOut
-                        && r.CheckOut > checkIn
-                        && r.Status != ReservationStatus.Cancelled);
+                var query = _context.Reservations.AsNoTracking().Where(r =>
+                    r.RoomId == roomId
+                    && r.CheckIn < checkOut && r.CheckOut > checkIn
+                    && r.Status != ReservationStatus.Cancelled);
 
                 if (excludeReservationId.HasValue)
                     query = query.Where(r => r.Id != excludeReservationId.Value);
@@ -121,8 +120,7 @@ namespace HotelBooking.Data.Repositories
                 if (guestId <= 0)
                     return OperationResult<List<Reservation>>.Validation(DataMessages.InvalidId);
 
-                var reservations = await _context.Reservations
-                    .AsNoTracking()
+                var reservations = await _context.Reservations.AsNoTracking()
                     .Where(r => r.GuestId == guestId)
                     .ToListAsync();
                 return OperationResult<List<Reservation>>.Ok(reservations);
@@ -154,6 +152,8 @@ namespace HotelBooking.Data.Repositories
                 return OperationResult<Reservation>.Unexpected(DataMessages.QueryError);
             }
         }
+
+        // Una reserva cancelada no bloquea la habitación (RN12), así que no se comprueba.
         private async Task<bool> HasOverlapAsync(Reservation reservation)
         {
             if (reservation.Status == ReservationStatus.Cancelled)
@@ -162,8 +162,7 @@ namespace HotelBooking.Data.Repositories
             return await _context.Reservations.AnyAsync(r =>
                 r.RoomId == reservation.RoomId
                 && r.Id != reservation.Id
-                && r.CheckIn < reservation.CheckOut
-                && r.CheckOut > reservation.CheckIn
+                && r.CheckIn < reservation.CheckOut && r.CheckOut > reservation.CheckIn
                 && r.Status != ReservationStatus.Cancelled);
         }
     }

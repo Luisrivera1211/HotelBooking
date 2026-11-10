@@ -1,0 +1,34 @@
+﻿@model NewReservationViewModel
+@{ ViewData["Title"] = "Nueva reserva"; }
+<h1 class="h3 mb-3">Nueva reserva</h1>
+<form asp-action="Create" method="post" class="card card-body shadow-sm" style="max-width:640px">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <input asp-for="RoomId" type="hidden" />
+    <input asp-for="RoomLabel" type="hidden" />
+    <p class="fw-semibold">@Model.RoomLabel</p>
+    <div class="mb-3">
+        <label asp-for="Document" class="form-label">Documento del huésped</label>
+        <input asp-for="Document" class="form-control" />
+        <span asp-validation-for="Document" class="text-danger"></span>
+        <div class="form-text">Si el huésped no existe, <a asp-controller="Guests" asp-action="Create" target="_blank">regístrelo primero</a>.</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="CheckIn" class="form-label">Entrada</label>
+            <input asp-for="CheckIn" class="form-control" />
+            <span asp-validation-for="CheckIn" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="CheckOut" class="form-label">Salida</label>
+            <input asp-for="CheckOut" class="form-control" />
+            <span asp-validation-for="CheckOut" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="GuestCount" class="form-label">Huéspedes</label>
+            <input asp-for="GuestCount" class="form-control" type="number" min="1" />
+            <span asp-validation-for="GuestCount" class="text-danger"></span>
+        </div>
+    </div>
+    <div><button class="btn btn-primary">Crear reserva</button> <a asp-controller="Availability" asp-action="Index" class="btn btn-link">Volver</a></div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

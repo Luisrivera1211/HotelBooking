@@ -1,0 +1,66 @@
+﻿@model AvailabilityViewModel
+@{ ViewData["Title"] = "Disponibilidad"; }
+<h1 class="h3 mb-3">Buscar disponibilidad</h1>
+<form asp-action="Index" method="post" class="card card-body shadow-sm mb-4">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label asp-for="Search.HotelId" class="form-label">Hotel</label>
+            <select asp-for="Search.HotelId" class="form-select">
+                <option value="0">-- Seleccione --</option>
+                @foreach (var h in Model.Hotels)
+                {
+                    <option value="@h.Id" selected="@(h.Id == Model.Search.HotelId)">@h.Name</option>
+                }
+            </select>
+            <span asp-validation-for="Search.HotelId" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Search.CheckIn" class="form-label">Entrada</label>
+            <input asp-for="Search.CheckIn" class="form-control" />
+            <span asp-validation-for="Search.CheckIn" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Search.CheckOut" class="form-label">Salida</label>
+            <input asp-for="Search.CheckOut" class="form-control" />
+            <span asp-validation-for="Search.CheckOut" class="text-danger"></span>
+        </div>
+        <div class="col-md-2">
+            <label asp-for="Search.GuestCount" class="form-label">Huéspedes</label>
+            <input asp-for="Search.GuestCount" class="form-control" type="number" min="1" />
+            <span asp-validation-for="Search.GuestCount" class="text-danger"></span>
+        </div>
+        <div class="col-md-1"><button class="btn btn-primary w-100">Buscar</button></div>
+    </div>
+</form>
+
+@if (Model.Rooms is not null)
+{
+    @if (!Model.Rooms.Any())
+    {
+        <div class="alert alert-info">No hay habitaciones disponibles para esas fechas y esa cantidad de huéspedes.</div>
+    }
+    else
+    {
+        <table class="table table-striped bg-white align-middle">
+            <thead><tr><th>Habitación</th><th>Tipo</th><th>Capacidad</th><th>Tarifa por noche</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var r in Model.Rooms)
+            {
+                <tr>
+                    <td>@r.Number</td><td>@r.RoomTypeName</td><td>@r.Capacity</td><td>@r.RatePerNight.ToString("C")</td>
+                    <td class="text-end">
+                        <a asp-controller="Reservations" asp-action="Create"
+                           asp-route-roomId="@r.Id"
+                           asp-route-checkIn="@Model.Search.CheckIn.ToString("yyyy-MM-dd")"
+                           asp-route-checkOut="@Model.Search.CheckOut.ToString("yyyy-MM-dd")"
+                           asp-route-guestCount="@Model.Search.GuestCount"
+                           class="btn btn-sm btn-success">Reservar</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+}
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
