@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using HotelBooking.Business.DTOs.Guest;
 
 namespace HotelBooking.Web.Models
@@ -26,10 +26,10 @@ namespace HotelBooking.Web.Models
 
         public CreateGuestDto ToDto() => new()
         {
-            FullName = FullName,
-            Document = Document,
-            Email = Email,
-            Phone = Phone,
+                FullName = FullName,
+                Document = Document,
+                Email = Email,
+                Phone = Phone,
         };
     }
 }

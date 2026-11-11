@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using HotelBooking.Business.DTOs.Availability;
 
 namespace HotelBooking.Web.Models
@@ -21,10 +21,10 @@ namespace HotelBooking.Web.Models
 
         public AvailabilitySearchDto ToDto() => new()
         {
-            HotelId = HotelId,
-            CheckIn = CheckIn,
-            CheckOut = CheckOut,
-            GuestCount = GuestCount,
+                HotelId = HotelId,
+                CheckIn = CheckIn,
+                CheckOut = CheckOut,
+                GuestCount = GuestCount,
         };
     }
 }

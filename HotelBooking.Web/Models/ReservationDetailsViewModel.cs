@@ -1,4 +1,4 @@
-﻿using HotelBooking.Business.DTOs.Notification;
+using HotelBooking.Business.DTOs.Notification;
 using HotelBooking.Business.DTOs.Reservation;
 
 namespace HotelBooking.Web.Models

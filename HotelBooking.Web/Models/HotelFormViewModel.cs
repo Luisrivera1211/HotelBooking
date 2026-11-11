@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using HotelBooking.Business.DTOs.Hotels;
 
 namespace HotelBooking.Web.Models
@@ -17,8 +17,8 @@ namespace HotelBooking.Web.Models
 
         public CreateHotelDto ToDto() => new()
         {
-            Name = Name,
-            Address = Address,
+                Name = Name,
+                Address = Address,
         };
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using HotelBooking.Business.DTOs.Block;
 
 namespace HotelBooking.Web.Models
@@ -16,8 +16,8 @@ namespace HotelBooking.Web.Models
 
         public CreateBlockDto ToDto() => new()
         {
-            Name = Name,
-            HotelId = HotelId,
+                Name = Name,
+                HotelId = HotelId,
         };
     }
 }

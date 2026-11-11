@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using HotelBooking.Business.DTOs.Employee;
 
 namespace HotelBooking.Web.Models
@@ -17,8 +17,8 @@ namespace HotelBooking.Web.Models
 
         public LoginDto ToDto() => new()
         {
-            Email = Email,
-            Password = Password,
+                Email = Email,
+                Password = Password,
         };
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using HotelBooking.Business.DTOs.RoomType;
 
 namespace HotelBooking.Web.Models
@@ -19,9 +19,9 @@ namespace HotelBooking.Web.Models
 
         public CreateRoomTypeDto ToDto() => new()
         {
-            Name = Name,
-            Capacity = Capacity,
-            RatePerNight = RatePerNight,
+                Name = Name,
+                Capacity = Capacity,
+                RatePerNight = RatePerNight,
         };
     }
 }

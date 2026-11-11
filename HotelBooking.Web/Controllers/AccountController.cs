@@ -1,12 +1,11 @@
-﻿using HotelBooking.Business.DTOs.Employee;
+using System.Security.Claims;
+using HotelBooking.Business.DTOs.Employee;
 using HotelBooking.Business.Interfaces;
-using HotelBooking.Web.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using HotelBooking.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.Security.Policy;
 
 namespace HotelBooking.Web.Controllers
 {
@@ -58,6 +57,7 @@ namespace HotelBooking.Web.Controllers
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
+            // Solo se redirige a rutas locales (evita open redirect)
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
 

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using HotelBooking.Business.DTOs.Floor;
 
 namespace HotelBooking.Web.Models
@@ -15,8 +15,8 @@ namespace HotelBooking.Web.Models
 
         public CreateFloorDto ToDto() => new()
         {
-            Number = Number,
-            BlockId = BlockId,
+                Number = Number,
+                BlockId = BlockId,
         };
     }
 }

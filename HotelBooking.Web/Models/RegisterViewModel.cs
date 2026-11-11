@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using HotelBooking.Business.DTOs.Employee;
 using HotelBooking.Data.Enums;
 
@@ -34,12 +34,12 @@ namespace HotelBooking.Web.Models
 
         public RegisterEmployeeDto ToDto() => new()
         {
-            FullName = FullName,
-            Email = Email,
-            Password = Password,
-            ConfirmPassword = ConfirmPassword,
-            Role = Role,
-            AdminCode = AdminCode,
+                FullName = FullName,
+                Email = Email,
+                Password = Password,
+                ConfirmPassword = ConfirmPassword,
+                Role = Role,
+                AdminCode = AdminCode,
         };
     }
 }

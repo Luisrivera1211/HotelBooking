@@ -1,4 +1,4 @@
-﻿using HotelBooking.Business.DTOs.Hotels;
+using HotelBooking.Business.DTOs.Hotels;
 using HotelBooking.Business.DTOs.Room;
 
 namespace HotelBooking.Web.Models

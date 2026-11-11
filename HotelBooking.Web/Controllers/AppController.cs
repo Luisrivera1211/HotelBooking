@@ -1,4 +1,4 @@
-﻿using HotelBooking.Data.Results;
+using HotelBooking.Data.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.Web.Controllers

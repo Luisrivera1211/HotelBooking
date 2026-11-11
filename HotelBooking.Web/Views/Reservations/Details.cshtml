@@ -1,4 +1,4 @@
-﻿@model ReservationDetailsViewModel
+@model ReservationDetailsViewModel
 @{
     var r = Model.Reservation;
     var editable = r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.Confirmed;

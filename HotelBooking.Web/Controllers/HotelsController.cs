@@ -1,4 +1,4 @@
-﻿using HotelBooking.Business.DTOs.Hotels;
+using HotelBooking.Business.DTOs.Hotels;
 using HotelBooking.Business.Interfaces;
 using HotelBooking.Web.Constants;
 using HotelBooking.Web.Models;
