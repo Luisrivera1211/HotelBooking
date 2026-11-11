@@ -1,6 +1,10 @@
 ﻿@model RoomTypeFormViewModel
+@{
+    var formAction = ViewData["FormAction"]?.ToString() ?? "Create";
+    var formId = ViewData["Id"]?.ToString();
+}
 <h1 class="h3 mb-3">@ViewData["Title"]</h1>
-<form asp-action="@ViewData["FormAction"]" asp-route-id="@ViewData["Id"]" method="post" class="card card-body shadow-sm" style="max-width:600px">
+<form asp-action="@formAction" asp-route-id="@formId" method="post" class="card card-body shadow-sm" style="max-width:600px">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <div class="mb-3">
         <label asp-for="Name" class="form-label">Nombre</label>

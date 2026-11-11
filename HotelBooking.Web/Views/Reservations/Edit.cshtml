@@ -1,6 +1,9 @@
 ﻿@model ReservationEditViewModel
+@{
+    var reservationId = ViewData["Id"]?.ToString();
+}
 <h1 class="h3 mb-3">@ViewData["Title"]</h1>
-<form asp-action="Edit" asp-route-id="@ViewData["Id"]" method="post" class="card card-body shadow-sm" style="max-width:640px">
+<form asp-action="Edit" asp-route-id="@reservationId" method="post" class="card card-body shadow-sm" style="max-width:640px">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <input asp-for="RoomId" type="hidden" />
     <div class="row">
@@ -21,6 +24,6 @@
         </div>
     </div>
     <p class="text-muted small">Para cambiar de habitación, cancele esta reserva y cree una nueva desde Disponibilidad.</p>
-    <div><button class="btn btn-primary">Guardar cambios</button> <a asp-action="Details" asp-route-id="@ViewData["Id"]" class="btn btn-link">Cancelar</a></div>
+    <div><button class="btn btn-primary">Guardar cambios</button> <a asp-action="Details" asp-route-id="@reservationId" class="btn btn-link">Cancelar</a></div>
 </form>
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

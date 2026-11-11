@@ -1,7 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Rendering
 @model RoomFormViewModel
+@{
+    var formAction = ViewData["FormAction"]?.ToString() ?? "Create";
+    var formId = ViewData["Id"]?.ToString();
+}
+@{
+    var roomTypes = (List<SelectListItem>)ViewData["RoomTypes"]!;
+}
 <h1 class="h3 mb-3">@ViewData["Title"]</h1>
-<form asp-action="@ViewData["FormAction"]" asp-route-id="@ViewData["Id"]" method="post" class="card card-body shadow-sm" style="max-width:600px">
+<form asp-action="@formAction" asp-route-id="@formId" method="post" class="card card-body shadow-sm" style="max-width:600px">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <input asp-for="FloorId" type="hidden" />
     <div class="mb-3">
@@ -11,7 +18,7 @@
     </div>
     <div class="mb-3">
         <label asp-for="RoomTypeId" class="form-label">Tipo de habitación</label>
-        <select asp-for="RoomTypeId" class="form-select" asp-items="(List<SelectListItem>)ViewData["RoomTypes"]!">
+        <select asp-for="RoomTypeId" class="form-select" asp-items="roomTypes">
             <option value="0">-- Seleccione --</option>
         </select>
         <span asp-validation-for="RoomTypeId" class="text-danger"></span>

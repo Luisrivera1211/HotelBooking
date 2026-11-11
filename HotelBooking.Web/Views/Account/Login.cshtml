@@ -1,5 +1,8 @@
 ﻿@model LoginViewModel
 @{
+    var returnUrl = ViewData["ReturnUrl"]?.ToString();
+}
+@{
     ViewData["Title"] = "Iniciar sesión";
 }
 <div class="row justify-content-center">
@@ -7,7 +10,7 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <h1 class="h4 mb-3">Iniciar sesión</h1>
-                <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+                <form asp-action="Login" asp-route-returnUrl="@returnUrl" method="post">
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
                     <div class="mb-3">
                         <label asp-for="Email" class="form-label">Correo</label>
