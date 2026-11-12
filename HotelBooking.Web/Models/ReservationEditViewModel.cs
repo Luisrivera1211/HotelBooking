@@ -3,8 +3,7 @@ using HotelBooking.Business.DTOs.Reservation;
 
 namespace HotelBooking.Web.Models
 {
-    // Modelo del formulario: la validación de entrada vive en la capa de presentación;
-    // Business recibe un DTO sin anotaciones y vuelve a validar por su cuenta.
+
     public class ReservationEditViewModel
     {
         [Range(1, int.MaxValue, ErrorMessage = "Seleccione una habitación.")]

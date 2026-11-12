@@ -33,10 +33,9 @@ namespace HotelBooking.Business.Services
             _notificationService = notificationService;
         }
 
-        // Resultado de validar una estadía: lo que Create y Modify necesitan para guardar
         private sealed record Stay(Room Room, DateTime CheckIn, DateTime CheckOut, decimal Total);
 
-        // CU-006
+    
         public async Task<OperationResult<ReservationDto>> CreateAsync(CreateReservationDto dto)
         {
             if (dto is null)
@@ -58,11 +57,11 @@ namespace HotelBooking.Business.Services
                 CheckIn = s.CheckIn,
                 CheckOut = s.CheckOut,
                 GuestCount = dto.GuestCount,
-                Total = s.Total,                       // RN11: lo calcula el sistema
-                Status = ReservationStatus.Pending     // toda reserva nace pendiente
+                Total = s.Total,                       
+                Status = ReservationStatus.Pending     
             };
 
-            // Data repite la comprobación de solapamiento dentro de una transacción (RNF-006)
+            
             var saved = await _reservationRepository.SaveEntityAsync(reservation);
             if (!saved.Success)
                 return OperationResult<ReservationDto>.Fail(saved.Message, saved.ErrorType);
@@ -86,7 +85,7 @@ namespace HotelBooking.Business.Services
             if (!reservations.Success)
                 return OperationResult<List<ReservationDto>>.Fail(reservations.Message, reservations.ErrorType);
 
-            // Los números de habitación se cargan una sola vez
+            
             var rooms = await _roomRepository.GetAllAsync();
             if (!rooms.Success)
                 return OperationResult<List<ReservationDto>>.Fail(rooms.Message, rooms.ErrorType);
@@ -100,7 +99,7 @@ namespace HotelBooking.Business.Services
             return OperationResult<List<ReservationDto>>.Ok(list);
         }
 
-        // CU-008
+        
         public async Task<OperationResult<ReservationDto>> ModifyAsync(int id, ModifyReservationDto dto)
         {
             if (dto is null)
@@ -114,7 +113,7 @@ namespace HotelBooking.Business.Services
             if (reservation.Status != ReservationStatus.Pending && reservation.Status != ReservationStatus.Confirmed)
                 return OperationResult<ReservationDto>.Conflict(ErrorMessages.ReservationNotModifiable);
 
-            // Misma validación que al crear; la reserva se excluye para no chocar consigo misma
+            
             var stay = await ValidateStayAsync(dto.RoomId, dto.CheckIn, dto.CheckOut, dto.GuestCount, id);
             if (!stay.Success)
                 return OperationResult<ReservationDto>.Fail(stay.Message, stay.ErrorType);
@@ -124,7 +123,7 @@ namespace HotelBooking.Business.Services
             reservation.CheckIn = s.CheckIn;
             reservation.CheckOut = s.CheckOut;
             reservation.GuestCount = dto.GuestCount;
-            reservation.Total = s.Total;               // se recalcula con la nueva habitación y fechas
+            reservation.Total = s.Total;               
 
             var updated = await _reservationRepository.UpdateEntityAsync(reservation);
             if (!updated.Success)
@@ -134,7 +133,7 @@ namespace HotelBooking.Business.Services
             return await LoadDtoAsync(id, "Reserva modificada correctamente." + warning);
         }
 
-        // CU-007
+        
         public async Task<OperationResult<ReservationDto>> ConfirmAsync(int id)
         {
             var found = await _reservationRepository.GetEntityByIdAsync(id);
@@ -155,7 +154,7 @@ namespace HotelBooking.Business.Services
             return await LoadDtoAsync(id, "Reserva confirmada correctamente." + warning);
         }
 
-        // CU-009
+       
         public async Task<OperationResult<ReservationDto>> CancelAsync(int id)
         {
             var found = await _reservationRepository.GetEntityByIdAsync(id);
@@ -176,12 +175,11 @@ namespace HotelBooking.Business.Services
             return await LoadDtoAsync(id, "Reserva cancelada correctamente." + warning);
         }
 
-        // Reglas compartidas por crear y modificar: fechas (RN07), habitación (RN05, RN14),
-        // capacidad (RN08), solapamiento (RN15) y total (RN11).
+        
         private async Task<OperationResult<Stay>> ValidateStayAsync(
             int roomId, DateTime checkInRaw, DateTime checkOutRaw, int guestCount, int? excludeReservationId)
         {
-            // Las estadías son por noche, así que se trabaja solo con la fecha
+            
             var checkIn = checkInRaw.Date;
             var checkOut = checkOutRaw.Date;
 
@@ -220,7 +218,7 @@ namespace HotelBooking.Business.Services
             return OperationResult<Stay>.Ok(new Stay(room.Data, checkIn, checkOut, nights * type.Data.RatePerNight));
         }
 
-        // El correo es secundario: si falla, la operación sigue siendo exitosa y solo se avisa.
+       
         private async Task<string> NotifyAsync(int reservationId, NotificationType type)
         {
             var result = await _notificationService.NotifyAsync(reservationId, type);

@@ -26,7 +26,6 @@ namespace HotelBooking.Data.Repositories
             return null;
         }
 
-        // RNF-006: la comprobación de solapamiento y el guardado ocurren en la misma transacción.
         public override async Task<OperationResult<Reservation>> SaveEntityAsync(Reservation reservation)
         {
             try
@@ -153,7 +152,6 @@ namespace HotelBooking.Data.Repositories
             }
         }
 
-        // Una reserva cancelada no bloquea la habitación (RN12), así que no se comprueba.
         private async Task<bool> HasOverlapAsync(Reservation reservation)
         {
             if (reservation.Status == ReservationStatus.Cancelled)

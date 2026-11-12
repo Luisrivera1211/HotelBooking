@@ -25,7 +25,6 @@ namespace HotelBooking.Business.Services
             var email = dto.Email?.Trim() ?? string.Empty;
             var document = dto.Document?.Trim() ?? string.Empty;
 
-            // Data solo exige que el correo no venga vacío; el formato se valida aquí
             if (!string.IsNullOrWhiteSpace(email) && !InputValidator.IsValidEmail(email))
                 return OperationResult<GuestDto>.Validation(ErrorMessages.InvalidEmail);
 
@@ -59,7 +58,6 @@ namespace HotelBooking.Business.Services
             return OperationResult<GuestDto>.Ok(ToDto(found.Data!));
         }
 
-        // CU-004: buscar al huésped por documento antes de registrarlo
         public async Task<OperationResult<GuestDto>> GetByDocumentAsync(string document)
         {
             var found = await _guestRepository.GetByDocumentAsync(document);
@@ -95,7 +93,6 @@ namespace HotelBooking.Business.Services
             if (!string.IsNullOrWhiteSpace(email) && !InputValidator.IsValidEmail(email))
                 return OperationResult<GuestDto>.Validation(ErrorMessages.InvalidEmail);
 
-            // El documento puede coincidir solo con el del propio huésped
             var exists = await _guestRepository.ExistsDocumentAsync(document, id);
             if (!exists.Success)
                 return OperationResult<GuestDto>.Fail(exists.Message, exists.ErrorType);

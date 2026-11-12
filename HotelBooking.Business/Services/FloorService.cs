@@ -23,14 +23,12 @@ namespace HotelBooking.Business.Services
             if (dto is null)
                 return OperationResult<FloorDto>.Validation(DataMessages.EntityRequired);
 
-            // El bloque debe existir y estar activo
             var block = await _blockRepository.GetEntityByIdAsync(dto.BlockId);
             if (!block.Success)
                 return OperationResult<FloorDto>.Fail(block.Message, block.ErrorType);
             if (!block.Data!.IsActive)
                 return OperationResult<FloorDto>.Conflict(ErrorMessages.BlockInactive);
 
-            // RN03: no puede haber dos pisos activos con el mismo número en el bloque
             var exists = await _floorRepository.ExistsActiveNumberAsync(dto.BlockId, dto.Number);
             if (!exists.Success)
                 return OperationResult<FloorDto>.Fail(exists.Message, exists.ErrorType);
@@ -77,11 +75,10 @@ namespace HotelBooking.Business.Services
 
             var floor = found.Data!;
 
-            // Ya está en ese estado: éxito sin cambios
+            
             if (floor.IsActive == isActive)
                 return OperationResult<FloorDto>.Ok(ToDto(floor));
 
-            // Reactivar también debe respetar RN03: otro piso activo podría haber tomado el número
             if (isActive)
             {
                 var exists = await _floorRepository.ExistsActiveNumberAsync(floor.BlockId, floor.Number, id);

@@ -38,7 +38,7 @@ namespace HotelBooking.Business.Services
             if (!Enum.IsDefined(dto.Role))
                 return OperationResult<EmployeeDto>.Validation(ErrorMessages.InvalidRole);
 
-            // El rol de administrador solo se asigna con el código de autorización
+            
             if (dto.Role == EmployeeRole.Administrator)
             {
                 var expectedCode = _configuration["AdminRegistrationCode"];
@@ -79,15 +79,14 @@ namespace HotelBooking.Business.Services
             if (!found.Success)
                 return OperationResult<EmployeeDto>.Fail(found.Message, found.ErrorType);
 
-            // Correo inexistente y contraseña incorrecta dan el mismo mensaje,
-            // para no revelar qué correos están registrados
+            
             if (found.Data is null || !PasswordHasher.Verify(dto.Password, found.Data.PasswordHash))
                 return OperationResult<EmployeeDto>.Validation(ErrorMessages.InvalidCredentials);
 
             return OperationResult<EmployeeDto>.Ok(ToDto(found.Data));
         }
 
-        // Nunca expone PasswordHash
+        
         private static EmployeeDto ToDto(Employee employee) => new()
         {
             Id = employee.Id,

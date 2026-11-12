@@ -28,7 +28,7 @@
             <td>@r.Number</td>
             <td>@r.RoomTypeName</td>
             <td>@r.Capacity</td>
-            <td>@r.RatePerNight.ToString("C")</td>
+            <td>@r.RatePerNight.ToDop()</td>
             <td><span class="badge bg-@r.Status.Badge()">@r.Status.Text()</span></td>
             <td class="text-end">
                 <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Editar</a>

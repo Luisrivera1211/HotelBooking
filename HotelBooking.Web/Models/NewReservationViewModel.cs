@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HotelBooking.Web.Models
 {
-    // Datos del formulario de nueva reserva. El huésped se identifica por documento (ya existe o se crea antes).
     public class NewReservationViewModel
     {
         [Range(1, int.MaxValue, ErrorMessage = "Seleccione una habitación.")]
@@ -21,7 +20,6 @@ namespace HotelBooking.Web.Models
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad de huéspedes debe ser mayor que cero.")]
         public int GuestCount { get; set; } = 1;
 
-        // Solo para mostrar
         public string RoomLabel { get; set; } = string.Empty;
     }
 }

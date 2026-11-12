@@ -44,7 +44,7 @@ namespace HotelBooking.Business.Services
                 FloorId = dto.FloorId,
                 RoomTypeId = dto.RoomTypeId,
                 Number = number,
-                Status = RoomStatus.Available   // el estado inicial lo decide el servicio
+                Status = RoomStatus.Available   
             };
 
             var saved = await _roomRepository.SaveEntityAsync(room);
@@ -69,7 +69,7 @@ namespace HotelBooking.Business.Services
             if (!rooms.Success)
                 return OperationResult<List<RoomDto>>.Fail(rooms.Message, rooms.ErrorType);
 
-            // Los tipos se cargan una sola vez para no consultar uno por habitación
+            
             var types = await _roomTypeRepository.GetAllAsync();
             if (!types.Success)
                 return OperationResult<List<RoomDto>>.Fail(types.Message, types.ErrorType);
@@ -93,7 +93,6 @@ namespace HotelBooking.Business.Services
 
             var number = dto.Number?.Trim() ?? string.Empty;
 
-            // Se excluye la propia habitación para poder guardar sin cambiar el número
             var check = await ValidateAsync(dto.FloorId, dto.RoomTypeId, number, id);
             if (!check.Success)
                 return OperationResult<RoomDto>.Fail(check.Message, check.ErrorType);
@@ -110,7 +109,6 @@ namespace HotelBooking.Business.Services
             return OperationResult<RoomDto>.Ok(RoomMapper.ToDto(updated.Data!, check.Data!), updated.Message);
         }
 
-        // RF-007
         public async Task<OperationResult<RoomDto>> ChangeStatusAsync(int id, ChangeRoomStatusDto dto)
         {
             if (dto is null)
@@ -138,8 +136,7 @@ namespace HotelBooking.Business.Services
             return await ToDtoAsync(room, string.Empty);
         }
 
-        // Comprueba piso (existe y activo), tipo (existe) y número único en el hotel.
-        // Devuelve el tipo de habitación para armar el DTO sin otra consulta.
+        
         private async Task<OperationResult<RoomType>> ValidateAsync(int floorId, int roomTypeId, string number, int? excludeRoomId)
         {
             var floor = await _floorRepository.GetEntityByIdAsync(floorId);
@@ -152,12 +149,12 @@ namespace HotelBooking.Business.Services
             if (!type.Success)
                 return OperationResult<RoomType>.Fail(type.Message, type.ErrorType);
 
-            // Room solo apunta a Floor: el hotel se alcanza por Floor -> Block -> Hotel
+            
             var block = await _blockRepository.GetEntityByIdAsync(floor.Data.BlockId);
             if (!block.Success)
                 return OperationResult<RoomType>.Fail(block.Message, block.ErrorType);
 
-            // RN04: el número es único dentro del hotel
+           
             var exists = await _roomRepository.ExistsNumberInHotelAsync(block.Data!.HotelId, number, excludeRoomId);
             if (!exists.Success)
                 return OperationResult<RoomType>.Fail(exists.Message, exists.ErrorType);

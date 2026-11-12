@@ -7,8 +7,7 @@ using HotelBooking.Data.Results;
 
 namespace HotelBooking.Business.Services
 {
-    // RoomType no tiene repositorio propio: usa el genérico. Por eso no existe un Validate en Data
-    // para esta entidad y los campos se validan aquí.
+    
     public class RoomTypeService : IRoomTypeService
     {
         private readonly IBaseRepository<RoomType> _roomTypeRepository;
@@ -82,7 +81,6 @@ namespace HotelBooking.Business.Services
             if (fieldError is not null)
                 return OperationResult<RoomTypeDto>.Validation(fieldError);
 
-            // Se excluye el propio tipo para poder guardar sin cambiar el nombre
             var exists = await NameExistsAsync(name, id);
             if (!exists.Success)
                 return OperationResult<RoomTypeDto>.Fail(exists.Message, exists.ErrorType);

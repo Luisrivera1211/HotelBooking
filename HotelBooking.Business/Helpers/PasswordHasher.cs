@@ -2,7 +2,6 @@
 
 namespace HotelBooking.Business.Helpers
 {
-    // PBKDF2 con sal aleatoria. Formato guardado: iteraciones.sal.hash (todo en Base64)
     public static class PasswordHasher
     {
         private const int SaltSize = 16;

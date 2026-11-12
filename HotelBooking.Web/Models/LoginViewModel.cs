@@ -3,8 +3,6 @@ using HotelBooking.Business.DTOs.Employee;
 
 namespace HotelBooking.Web.Models
 {
-    // Modelo del formulario: la validación de entrada vive en la capa de presentación;
-    // Business recibe un DTO sin anotaciones y vuelve a validar por su cuenta.
     public class LoginViewModel
     {
         [Required(ErrorMessage = "El correo es obligatorio.")]

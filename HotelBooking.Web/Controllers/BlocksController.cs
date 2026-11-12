@@ -19,7 +19,6 @@ namespace HotelBooking.Web.Controllers
             _hotelService = hotelService;
         }
 
-        // Bloques de un hotel
         public async Task<IActionResult> Index(int hotelId)
         {
             var hotel = await _hotelService.GetByIdAsync(hotelId);

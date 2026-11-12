@@ -23,18 +23,15 @@ namespace HotelBooking.Data.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            // ----- Enums como string (coinciden con los CHECK de la base) -----
             modelBuilder.Entity<Room>().Property(r => r.Status).HasConversion<string>();
             modelBuilder.Entity<Reservation>().Property(r => r.Status).HasConversion<string>();
             modelBuilder.Entity<Notification>().Property(n => n.Status).HasConversion<string>();
             modelBuilder.Entity<Notification>().Property(n => n.Type).HasConversion<string>();
             modelBuilder.Entity<Employee>().Property(e => e.Role).HasConversion<string>();
 
-            // ----- Decimales -----
             modelBuilder.Entity<RoomType>().Property(r => r.RatePerNight).HasPrecision(10, 2);
             modelBuilder.Entity<Reservation>().Property(r => r.Total).HasPrecision(10, 2);
 
-            // ----- Campos requeridos y longitudes (igual que la base) -----
             modelBuilder.Entity<Hotel>(e =>
             {
                 e.Property(h => h.Name).IsRequired().HasMaxLength(50);
@@ -60,7 +57,6 @@ namespace HotelBooking.Data.Context
             });
             modelBuilder.Entity<Notification>().Property(n => n.Message).IsRequired().HasMaxLength(255);
 
-            // ----- Relaciones: sin borrado en cascada -----
             modelBuilder.Entity<Block>()
                 .HasOne(b => b.Hotel).WithMany(h => h.Blocks)
                 .HasForeignKey(b => b.HotelId).OnDelete(DeleteBehavior.Restrict);

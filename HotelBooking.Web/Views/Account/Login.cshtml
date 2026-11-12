@@ -2,12 +2,15 @@
 @{
     var returnUrl = ViewData["ReturnUrl"]?.ToString();
 }
-@{ ViewData["Title"] = "Iniciar sesión"; }
-<div class="row justify-content-center">
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+<div class="row justify-content-center auth-wrap">
     <div class="col-md-5">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm app-card">
             <div class="card-body">
-                <h1 class="h4 mb-3">Iniciar sesión</h1>
+                <div class="text-center mb-3"><img src="~/img/logo-mark.svg" alt="HotelBooking" width="56" height="56" /></div>
+                <h1 class="h4 mb-3 text-center">Iniciar sesión</h1>
                 <form asp-action="Login" asp-route-returnUrl="@returnUrl" method="post">
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
                     <div class="mb-3">

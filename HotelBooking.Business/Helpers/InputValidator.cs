@@ -4,7 +4,6 @@ namespace HotelBooking.Business.Helpers
 {
     public static class InputValidator
     {
-        // Valida el formato del correo. Data solo comprueba que no venga vacío ni demasiado largo.
         public static bool IsValidEmail(string? email)
         {
             if (string.IsNullOrWhiteSpace(email))

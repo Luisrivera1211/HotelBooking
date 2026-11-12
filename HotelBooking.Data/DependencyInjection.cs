@@ -13,7 +13,6 @@ namespace HotelBooking.Data
             services.AddDbContext<HotelBookingDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // Genérico: cubre RoomType, que no tiene repositorio propio
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
             services.AddScoped<IHotelRepository, HotelRepository>();

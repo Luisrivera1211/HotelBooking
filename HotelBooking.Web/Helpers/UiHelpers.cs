@@ -2,7 +2,6 @@ using HotelBooking.Data.Enums;
 
 namespace HotelBooking.Web.Helpers
 {
-    // Traducciones y colores para mostrar enums en pantalla (solo presentación)
     public static class UiHelpers
     {
         public static string Text(this ReservationStatus s) => s switch

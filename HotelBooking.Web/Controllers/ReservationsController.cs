@@ -1,5 +1,7 @@
+using HotelBooking.Web.Helpers;
 using HotelBooking.Business.DTOs.Reservation;
 using HotelBooking.Business.Interfaces;
+using HotelBooking.Data.Enums;
 using HotelBooking.Web.Constants;
 using HotelBooking.Web.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +29,6 @@ namespace HotelBooking.Web.Controllers
             _notificationService = notificationService;
         }
 
-        // Llega desde la pantalla de disponibilidad con la habitación y fechas ya elegidas
         [HttpGet]
         public async Task<IActionResult> Create(int roomId, DateTime checkIn, DateTime checkOut, int guestCount)
         {
@@ -52,7 +53,6 @@ namespace HotelBooking.Web.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // El recepcionista identifica al huésped por documento
             var guest = await _guestService.GetByDocumentAsync(model.Document.Trim());
             if (!guest.Success)
             {
@@ -145,6 +145,21 @@ namespace HotelBooking.Web.Controllers
             return FlashAndRedirect(result, result.Message, nameof(Details), routeValues: new { id });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ResendNotification(int id, NotificationType type)
+        {
+            var result = await _notificationService.NotifyAsync(id, type);
+            if (!result.Success)
+                FlashError(result.Message);
+            else if (result.Data is null)
+                FlashOk("Esa notificación ya había sido enviada.");
+            else if (result.Data.Status == NotificationStatus.Sent)
+                FlashOk("Notificación enviada correctamente.");
+            else
+                FlashError("La notificación no pudo enviarse. Revise la configuración de correo.");
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
         private ViewResult EditView(ReservationEditViewModel dto, int id)
         {
             ViewData["Title"] = $"Modificar reserva #{id}";
@@ -153,6 +168,6 @@ namespace HotelBooking.Web.Controllers
         }
 
         private static string RoomLabel(HotelBooking.Business.DTOs.Room.RoomDto r) =>
-            $"Habitación {r.Number} · {r.RoomTypeName} · {r.RatePerNight:C}/noche";
+            $"Habitación {r.Number} · {r.RoomTypeName} · {r.RatePerNight.ToDop()}/noche";
     }
 }

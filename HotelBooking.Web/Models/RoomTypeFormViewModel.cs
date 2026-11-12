@@ -3,8 +3,6 @@ using HotelBooking.Business.DTOs.RoomType;
 
 namespace HotelBooking.Web.Models
 {
-    // Modelo del formulario: la validación de entrada vive en la capa de presentación;
-    // Business recibe un DTO sin anotaciones y vuelve a validar por su cuenta.
     public class RoomTypeFormViewModel
     {
         [Required(ErrorMessage = "El nombre es obligatorio.")]

@@ -48,7 +48,7 @@
             @foreach (var r in Model.Rooms)
             {
                 <tr>
-                    <td>@r.Number</td><td>@r.RoomTypeName</td><td>@r.Capacity</td><td>@r.RatePerNight.ToString("C")</td>
+                    <td>@r.Number</td><td>@r.RoomTypeName</td><td>@r.Capacity</td><td>@r.RatePerNight.ToDop()</td>
                     <td class="text-end">
                         <a asp-controller="Reservations" asp-action="Create"
                            asp-route-roomId="@r.Id"

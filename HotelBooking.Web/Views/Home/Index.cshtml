@@ -1,29 +1,51 @@
-@{ ViewData["Title"] = "Inicio"; }
-<h1 class="h3 mb-4">Bienvenido, @User.Identity!.Name</h1>
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+<section class="dash-hero mb-4">
+    <span class="hero-pill"><i class="bi bi-stars me-1"></i>Bienvenido de vuelta</span>
+    <h1>Hola, @User.Identity!.Name</h1>
+    <p>Gestione sus reservas y huéspedes de forma fácil y eficiente.</p>
+    <a asp-controller="Availability" asp-action="Index" class="btn btn-brass">Nueva reserva <i class="bi bi-arrow-right ms-1"></i></a>
+</section>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3"><div class="stat-card"><span class="stat-icon"><i class="bi bi-buildings"></i></span><div><div class="stat-num">@Model.ActiveHotels</div><div class="stat-label">Hoteles activos</div></div></div></div>
+    <div class="col-6 col-xl-3"><div class="stat-card"><span class="stat-icon"><i class="bi bi-people"></i></span><div><div class="stat-num">@Model.Guests</div><div class="stat-label">Huéspedes</div></div></div></div>
+    <div class="col-6 col-xl-3"><div class="stat-card"><span class="stat-icon"><i class="bi bi-calendar-event"></i></span><div><div class="stat-num">@Model.UpcomingCount</div><div class="stat-label">Reservas próximas</div></div></div></div>
+    <div class="col-6 col-xl-3"><div class="stat-card"><span class="stat-icon"><i class="bi bi-hourglass-split"></i></span><div><div class="stat-num">@Model.PendingCount</div><div class="stat-label">Por confirmar</div></div></div></div>
+</div>
+
 <div class="row g-3">
-    <div class="col-md-4">
-        <div class="card h-100"><div class="card-body">
-            <h2 class="h5">Disponibilidad</h2>
-            <p class="text-muted">Busque habitaciones libres por fechas y cree la reserva.</p>
-            <a asp-controller="Availability" asp-action="Index" class="btn btn-primary">Buscar</a>
-        </div></div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100"><div class="card-body">
-            <h2 class="h5">Huéspedes</h2>
-            <p class="text-muted">Registre huéspedes y consulte sus reservas.</p>
-            <a asp-controller="Guests" asp-action="Index" class="btn btn-primary">Ver huéspedes</a>
-        </div></div>
-    </div>
-    @if (User.IsInRole(Roles.Administrator))
-    {
-        <div class="col-md-4">
-            <div class="card h-100"><div class="card-body">
-                <h2 class="h5">Administración</h2>
-                <p class="text-muted">Hoteles, bloques, pisos, habitaciones y tipos.</p>
-                <a asp-controller="Hotels" asp-action="Index" class="btn btn-dark">Hoteles</a>
-                <a asp-controller="RoomTypes" asp-action="Index" class="btn btn-outline-dark">Tipos</a>
-            </div></div>
+    <div class="col-lg-8">
+        <div class="panel">
+            <div class="panel-title"><i class="bi bi-calendar-week"></i>Reservas próximas</div>
+            @foreach (var r in Model.Upcoming)
+            {
+                <a class="res-row" asp-controller="Reservations" asp-action="Details" asp-route-id="@r.Id">
+                    <span class="avatar">@(r.GuestName.Length > 0 ? r.GuestName[..1].ToUpper() : "?")</span>
+                    <span class="res-main"><strong>@r.GuestName</strong><small>Habitación @r.RoomNumber</small></span>
+                    <span class="res-dates d-none d-md-block">@r.CheckIn.ToString("dd/MM/yyyy") – @r.CheckOut.ToString("dd/MM/yyyy")</span>
+                    <span class="res-total d-none d-sm-block">@r.Total.ToDop()</span>
+                    <span class="badge bg-@r.Status.Badge()">@r.Status.Text()</span>
+                </a>
+            }
+            @if (!Model.Upcoming.Any())
+            {
+                <p class="text-muted text-center my-4">No hay reservas próximas.</p>
+            }
         </div>
-    }
+    </div>
+    <div class="col-lg-4">
+        <div class="panel">
+            <div class="panel-title"><i class="bi bi-lightning-charge"></i>Acciones rápidas</div>
+            <a class="quick-link" asp-controller="Availability" asp-action="Index"><i class="bi bi-calendar-plus"></i>Buscar disponibilidad<i class="bi bi-chevron-right ms-auto"></i></a>
+            <a class="quick-link" asp-controller="Guests" asp-action="Create"><i class="bi bi-person-plus"></i>Registrar huésped<i class="bi bi-chevron-right ms-auto"></i></a>
+            @if (User.IsInRole(Roles.Administrator))
+            {
+                <a class="quick-link" asp-controller="Hotels" asp-action="Index"><i class="bi bi-buildings"></i>Gestionar hoteles<i class="bi bi-chevron-right ms-auto"></i></a>
+                <a class="quick-link" asp-controller="RoomTypes" asp-action="Index"><i class="bi bi-door-open"></i>Tipos de habitación<i class="bi bi-chevron-right ms-auto"></i></a>
+            }
+        </div>
+    </div>
 </div>

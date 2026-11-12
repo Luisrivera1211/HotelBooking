@@ -31,7 +31,6 @@ namespace HotelBooking.Web.Controllers
             return View(result.Data);
         }
 
-        // Ficha del huésped con su historial de reservas
         public async Task<IActionResult> Details(int id)
         {
             var guest = await _guestService.GetByIdAsync(id);

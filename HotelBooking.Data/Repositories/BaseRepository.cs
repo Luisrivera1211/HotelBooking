@@ -15,8 +15,6 @@ namespace HotelBooking.Data.Repositories
             _context = context;
         }
 
-        // Cada repositorio concreto lo sobrescribe con sus reglas de campos.
-        // null = válido; un texto = el error.
         protected virtual string? Validate(T entity) => null;
 
         public async Task<OperationResult<T>> GetEntityByIdAsync(int id)

@@ -2,7 +2,7 @@
 
 namespace HotelBooking.Business.DTOs.Employee
 {
-    // Nunca incluye el hash de la contraseña
+ 
     public class EmployeeDto
     {
         public int Id { get; set; }

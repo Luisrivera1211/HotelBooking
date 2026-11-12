@@ -14,7 +14,6 @@ namespace HotelBooking.Business.DTOs.Employee
 
         public EmployeeRole Role { get; set; } = EmployeeRole.Receptionist;
 
-        // Solo se exige cuando Role es Administrator
         public string? AdminCode { get; set; }
     }
 }

@@ -25,7 +25,6 @@ namespace HotelBooking.Business.Services
             _emailSender = emailSender;
         }
 
-        // CU-010
         public async Task<OperationResult<NotificationDto>> NotifyAsync(int reservationId, NotificationType type)
         {
             var found = await _reservationRepository.GetWithDetailsAsync(reservationId);
@@ -35,7 +34,6 @@ namespace HotelBooking.Business.Services
             var reservation = found.Data!;
             var guest = reservation.Guest;
 
-            // A3: confirmación y cancelación ocurren una sola vez. Una modificación puede repetirse.
             if (type != NotificationType.Modification)
             {
                 var alreadySent = await _notificationRepository.ExistsSentAsync(reservationId, type);
@@ -47,7 +45,7 @@ namespace HotelBooking.Business.Services
 
             var (subject, summary) = Compose(type, reservation);
 
-            // Se registra primero como Pending
+            
             var notification = new Notification
             {
                 Type = type,
@@ -63,7 +61,6 @@ namespace HotelBooking.Business.Services
 
             notification = saved.Data!;
 
-            // A2 (sin correo) y A1 (fallo de envío) terminan en Failed; la reserva no se ve afectada
             var sent = false;
             if (!string.IsNullOrWhiteSpace(guest.Email))
             {

@@ -18,8 +18,6 @@ namespace HotelBooking.Business
             services.AddScoped<IAvailabilityService, AvailabilityService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IReservationService, ReservationService>();
-
-            // Envío real de correo detrás de una interfaz (DIP)
             services.AddScoped<IEmailSender, SmtpEmailSender>();
 
             return services;

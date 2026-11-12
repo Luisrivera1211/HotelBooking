@@ -31,8 +31,7 @@ namespace HotelBooking.Web.Controllers
             return await BuildView(search, rooms: null);
         }
 
-        // Se enlaza SOLO el DTO del formulario (el resto del view model tiene propiedades no anulables
-        // que el binder trataría como obligatorias)
+        
         [HttpPost]
         public async Task<IActionResult> Index([Bind(Prefix = nameof(AvailabilityViewModel.Search))] AvailabilitySearchViewModel search)
         {
@@ -59,7 +58,6 @@ namespace HotelBooking.Web.Controllers
             return View(new AvailabilityViewModel
             {
                 Search = search,
-                // Solo hoteles activos para buscar
                 Hotels = hotels.Success ? hotels.Data!.Where(h => h.IsActive).ToList() : new(),
                 Rooms = rooms
             });

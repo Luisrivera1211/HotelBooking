@@ -1,3 +1,4 @@
+using HotelBooking.Web.Helpers;
 using HotelBooking.Business.DTOs.Room;
 using HotelBooking.Business.Interfaces;
 using HotelBooking.Data.Enums;
@@ -23,7 +24,6 @@ namespace HotelBooking.Web.Controllers
             _roomTypeService = roomTypeService;
         }
 
-        // Habitaciones de un piso
         public async Task<IActionResult> Index(int floorId)
         {
             var floor = await _floorService.GetByIdAsync(floorId);
@@ -108,7 +108,7 @@ namespace HotelBooking.Web.Controllers
                 ShowError(types.Message);
 
             ViewData["RoomTypes"] = (types.Success ? types.Data! : new()).Select(t =>
-                new SelectListItem($"{t.Name} (cap. {t.Capacity}, {t.RatePerNight:C}/noche)", t.Id.ToString())).ToList();
+                new SelectListItem($"{t.Name} (cap. {t.Capacity}, {t.RatePerNight.ToDop()}/noche)", t.Id.ToString())).ToList();
             ViewData["Title"] = title;
             ViewData["FormAction"] = action;
             ViewData["Id"] = id;

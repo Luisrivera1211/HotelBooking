@@ -12,7 +12,7 @@
         <tr>
             <td>@t.Name</td>
             <td>@t.Capacity</td>
-            <td>@t.RatePerNight.ToString("C")</td>
+            <td>@t.RatePerNight.ToDop()</td>
             <td class="text-end"><a asp-action="Edit" asp-route-id="@t.Id" class="btn btn-sm btn-outline-primary">Editar</a></td>
         </tr>
     }

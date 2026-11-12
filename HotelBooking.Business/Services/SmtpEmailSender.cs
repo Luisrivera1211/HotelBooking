@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace HotelBooking.Business.Services
 {
-    // Lee la sección "Email" de appsettings: Host, Port, User, Password, From, EnableSsl
     public class SmtpEmailSender : IEmailSender
     {
         private readonly IConfiguration _configuration;
@@ -42,7 +41,6 @@ namespace HotelBooking.Business.Services
             }
             catch (Exception)
             {
-                // Un fallo de correo nunca debe afectar a la reserva (CU-010 A1)
                 return false;
             }
         }

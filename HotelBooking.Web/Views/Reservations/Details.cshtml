@@ -31,12 +31,12 @@
         <dt class="col-sm-3">Entrada</dt><dd class="col-sm-9">@r.CheckIn.ToString("dd/MM/yyyy")</dd>
         <dt class="col-sm-3">Salida</dt><dd class="col-sm-9">@r.CheckOut.ToString("dd/MM/yyyy")</dd>
         <dt class="col-sm-3">Huéspedes</dt><dd class="col-sm-9">@r.GuestCount</dd>
-        <dt class="col-sm-3">Total</dt><dd class="col-sm-9">@r.Total.ToString("C")</dd>
+        <dt class="col-sm-3">Total</dt><dd class="col-sm-9">@r.Total.ToDop()</dd>
     </dl>
 </div>
 <h2 class="h5">Notificaciones</h2>
 <table class="table table-striped bg-white align-middle">
-    <thead><tr><th>Tipo</th><th>Mensaje</th><th>Estado</th><th>Enviada</th></tr></thead>
+    <thead><tr><th>Tipo</th><th>Mensaje</th><th>Estado</th><th>Enviada</th><th></th></tr></thead>
     <tbody>
     @foreach (var n in Model.Notifications)
     {
@@ -44,8 +44,17 @@
             <td>@n.Type.Text()</td><td>@n.Message</td>
             <td><span class="badge bg-@(n.Status == NotificationStatus.Sent ? "success" : n.Status == NotificationStatus.Failed ? "danger" : "warning text-dark")">@n.Status.Text()</span></td>
             <td>@(n.SentAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+            <td class="text-end">
+                @if (n.Status == NotificationStatus.Failed)
+                {
+                    <form asp-action="ResendNotification" asp-route-id="@r.Id" method="post" class="d-inline">
+                        <input type="hidden" name="type" value="@n.Type" />
+                        <button class="btn btn-outline-primary btn-sm">Reenviar</button>
+                    </form>
+                }
+            </td>
         </tr>
     }
-    @if (!Model.Notifications.Any()) { <tr><td colspan="4" class="text-center text-muted">Sin notificaciones.</td></tr> }
+    @if (!Model.Notifications.Any()) { <tr><td colspan="5" class="text-center text-muted">Sin notificaciones.</td></tr> }
     </tbody>
 </table>

@@ -47,7 +47,6 @@
 </div>
 @section Scripts {
     <script>
-        // Las opciones del select tienen valor numérico: se compara el TEXTO ("Administrator")
         const role = document.getElementById('Role');
         const box = document.getElementById('adminCodeBox');
         function toggle() { box.style.display = role.options[role.selectedIndex].text === 'Administrator' ? '' : 'none'; }
