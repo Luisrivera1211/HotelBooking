@@ -6,7 +6,7 @@ namespace HotelBooking.Business.Interfaces
 {
     public interface INotificationService
     {
-        Task<OperationResult<NotificationDto>> NotifyAsync(int reservationId, NotificationType type);
+        Task<OperationResult<List<NotificationDto>>> NotifyAsync(int reservationId, NotificationType type);
         Task<OperationResult<List<NotificationDto>>> GetByReservationAsync(int reservationId);
     }
 }
