@@ -13,76 +13,72 @@ namespace HotelBooking.Business.Services
 
         private readonly INotificationRepository _notificationRepository;
         private readonly IReservationRepository _reservationRepository;
-        private readonly IEmailSender _emailSender;
+        private readonly IEnumerable<INotificationChannel> _channels;
 
         public NotificationService(
             INotificationRepository notificationRepository,
             IReservationRepository reservationRepository,
-            IEmailSender emailSender)
+            IEnumerable<INotificationChannel> channels)
         {
             _notificationRepository = notificationRepository;
             _reservationRepository = reservationRepository;
-            _emailSender = emailSender;
+            _channels = channels;
         }
 
-        public async Task<OperationResult<NotificationDto>> NotifyAsync(int reservationId, NotificationType type)
+        public async Task<OperationResult<List<NotificationDto>>> NotifyAsync(int reservationId, NotificationType type)
         {
             var found = await _reservationRepository.GetWithDetailsAsync(reservationId);
             if (!found.Success)
-                return OperationResult<NotificationDto>.Fail(found.Message, found.ErrorType);
+                return OperationResult<List<NotificationDto>>.Fail(found.Message, found.ErrorType);
 
             var reservation = found.Data!;
-            var guest = reservation.Guest;
-
-            if (type != NotificationType.Modification)
-            {
-                var alreadySent = await _notificationRepository.ExistsSentAsync(reservationId, type);
-                if (!alreadySent.Success)
-                    return OperationResult<NotificationDto>.Fail(alreadySent.Message, alreadySent.ErrorType);
-                if (alreadySent.Data)
-                    return OperationResult<NotificationDto>.Ok();
-            }
-
             var (subject, summary) = Compose(type, reservation);
+            var message = new NotificationMessage(type, subject, summary, reservation);
+            var results = new List<NotificationDto>();
 
-            
-            var notification = new Notification
+            foreach (var channel in _channels)
             {
-                Type = type,
-                Message = Truncate(summary, MessageMaxLength),
-                Status = NotificationStatus.Pending,
-                ReservationId = reservation.Id,
-                GuestId = reservation.GuestId
-            };
-
-            var saved = await _notificationRepository.SaveEntityAsync(notification);
-            if (!saved.Success)
-                return OperationResult<NotificationDto>.Fail(saved.Message, saved.ErrorType);
-
-            notification = saved.Data!;
-
-            var sent = false;
-            if (!string.IsNullOrWhiteSpace(guest.Email))
-            {
-                try
+                if (type != NotificationType.Modification)
                 {
-                    var body = $"Hola {guest.FullName},\n\n{summary}\n\nGracias por elegirnos.";
-                    sent = await _emailSender.SendAsync(guest.Email, subject, body);
+                    var alreadySent = await _notificationRepository.ExistsSentAsync(reservationId, type, channel.Name);
+                    if (!alreadySent.Success)
+                        return OperationResult<List<NotificationDto>>.Fail(alreadySent.Message, alreadySent.ErrorType);
+                    if (alreadySent.Data)
+                        continue;
                 }
-                catch (Exception)
+
+                var saved = await _notificationRepository.SaveEntityAsync(new Notification
                 {
-                    sent = false;
+                    Type = type,
+                    Channel = channel.Name,
+                    Message = Truncate(summary, MessageMaxLength),
+                    Status = NotificationStatus.Pending,
+                    ReservationId = reservation.Id,
+                    GuestId = reservation.GuestId
+                });
+                if (!saved.Success)
+                    return OperationResult<List<NotificationDto>>.Fail(saved.Message, saved.ErrorType);
+
+                var notification = saved.Data!;
+
+                var sent = false;
+                if (channel.CanDeliverTo(reservation.Guest))
+                {
+                    try { sent = await channel.SendAsync(reservation.Guest, message); }
+                    catch (Exception) { sent = false; }
                 }
+
+                notification.Status = sent ? NotificationStatus.Sent : NotificationStatus.Failed;
+                notification.SentAt = sent ? DateTime.UtcNow : null;
+
+                var updated = await _notificationRepository.UpdateEntityAsync(notification);
+                if (!updated.Success)
+                    return OperationResult<List<NotificationDto>>.Fail(updated.Message, updated.ErrorType);
+
+                results.Add(ToDto(updated.Data!));
             }
 
-            notification.Status = sent ? NotificationStatus.Sent : NotificationStatus.Failed;
-            notification.SentAt = sent ? DateTime.UtcNow : null;
-
-            var updated = await _notificationRepository.UpdateEntityAsync(notification);
-            if (!updated.Success)
-                return OperationResult<NotificationDto>.Fail(updated.Message, updated.ErrorType);
-
-            return OperationResult<NotificationDto>.Ok(ToDto(updated.Data!));
+            return OperationResult<List<NotificationDto>>.Ok(results);
         }
 
         public async Task<OperationResult<List<NotificationDto>>> GetByReservationAsync(int reservationId)
@@ -117,6 +113,7 @@ namespace HotelBooking.Business.Services
         {
             Id = n.Id,
             Type = n.Type,
+            Channel = n.Channel,
             Message = n.Message,
             SentAt = n.SentAt,
             Status = n.Status,

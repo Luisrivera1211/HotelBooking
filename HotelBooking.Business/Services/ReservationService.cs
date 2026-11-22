@@ -35,7 +35,6 @@ namespace HotelBooking.Business.Services
 
         private sealed record Stay(Room Room, DateTime CheckIn, DateTime CheckOut, decimal Total);
 
-    
         public async Task<OperationResult<ReservationDto>> CreateAsync(CreateReservationDto dto)
         {
             if (dto is null)
@@ -61,7 +60,6 @@ namespace HotelBooking.Business.Services
                 Status = ReservationStatus.Pending     
             };
 
-            
             var saved = await _reservationRepository.SaveEntityAsync(reservation);
             if (!saved.Success)
                 return OperationResult<ReservationDto>.Fail(saved.Message, saved.ErrorType);
@@ -85,7 +83,6 @@ namespace HotelBooking.Business.Services
             if (!reservations.Success)
                 return OperationResult<List<ReservationDto>>.Fail(reservations.Message, reservations.ErrorType);
 
-            
             var rooms = await _roomRepository.GetAllAsync();
             if (!rooms.Success)
                 return OperationResult<List<ReservationDto>>.Fail(rooms.Message, rooms.ErrorType);
@@ -99,7 +96,6 @@ namespace HotelBooking.Business.Services
             return OperationResult<List<ReservationDto>>.Ok(list);
         }
 
-        
         public async Task<OperationResult<ReservationDto>> ModifyAsync(int id, ModifyReservationDto dto)
         {
             if (dto is null)
@@ -113,27 +109,30 @@ namespace HotelBooking.Business.Services
             if (reservation.Status != ReservationStatus.Pending && reservation.Status != ReservationStatus.Confirmed)
                 return OperationResult<ReservationDto>.Conflict(ErrorMessages.ReservationNotModifiable);
 
-            
             var stay = await ValidateStayAsync(dto.RoomId, dto.CheckIn, dto.CheckOut, dto.GuestCount, id);
             if (!stay.Success)
                 return OperationResult<ReservationDto>.Fail(stay.Message, stay.ErrorType);
 
             var s = stay.Data!;
+
+            var significant = reservation.RoomId != dto.RoomId
+                              || reservation.CheckIn != s.CheckIn
+                              || reservation.CheckOut != s.CheckOut;
+
             reservation.RoomId = dto.RoomId;
             reservation.CheckIn = s.CheckIn;
             reservation.CheckOut = s.CheckOut;
             reservation.GuestCount = dto.GuestCount;
-            reservation.Total = s.Total;               
+            reservation.Total = s.Total;              
 
             var updated = await _reservationRepository.UpdateEntityAsync(reservation);
             if (!updated.Success)
                 return OperationResult<ReservationDto>.Fail(updated.Message, updated.ErrorType);
 
-            var warning = await NotifyAsync(id, NotificationType.Modification);
+            var warning = significant ? await NotifyAsync(id, NotificationType.Modification) : string.Empty;
             return await LoadDtoAsync(id, "Reserva modificada correctamente." + warning);
         }
 
-        
         public async Task<OperationResult<ReservationDto>> ConfirmAsync(int id)
         {
             var found = await _reservationRepository.GetEntityByIdAsync(id);
@@ -154,7 +153,6 @@ namespace HotelBooking.Business.Services
             return await LoadDtoAsync(id, "Reserva confirmada correctamente." + warning);
         }
 
-       
         public async Task<OperationResult<ReservationDto>> CancelAsync(int id)
         {
             var found = await _reservationRepository.GetEntityByIdAsync(id);
@@ -175,11 +173,9 @@ namespace HotelBooking.Business.Services
             return await LoadDtoAsync(id, "Reserva cancelada correctamente." + warning);
         }
 
-        
         private async Task<OperationResult<Stay>> ValidateStayAsync(
             int roomId, DateTime checkInRaw, DateTime checkOutRaw, int guestCount, int? excludeReservationId)
         {
-            
             var checkIn = checkInRaw.Date;
             var checkOut = checkOutRaw.Date;
 
@@ -218,12 +214,11 @@ namespace HotelBooking.Business.Services
             return OperationResult<Stay>.Ok(new Stay(room.Data, checkIn, checkOut, nights * type.Data.RatePerNight));
         }
 
-       
         private async Task<string> NotifyAsync(int reservationId, NotificationType type)
         {
             var result = await _notificationService.NotifyAsync(reservationId, type);
 
-            var delivered = result.Success && (result.Data is null || result.Data.Status == NotificationStatus.Sent);
+            var delivered = result.Success && (result.Data!.Count == 0 || result.Data.Any(n => n.Status == NotificationStatus.Sent));
             return delivered ? string.Empty : " " + ErrorMessages.NotificationNotSent;
         }
 
@@ -248,7 +243,11 @@ namespace HotelBooking.Business.Services
             CheckOut = r.CheckOut,
             GuestCount = r.GuestCount,
             Total = r.Total,
-            Status = r.Status
+            Status = r.Status,
+            CreatedAt = r.CreatedAt,
+            CreatedBy = r.CreatedBy,
+            UpdatedAt = r.UpdatedAt,
+            UpdatedBy = r.UpdatedBy
         };
     }
 }
