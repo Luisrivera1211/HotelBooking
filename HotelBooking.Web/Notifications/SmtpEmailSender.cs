@@ -1,9 +1,8 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using HotelBooking.Business.Interfaces;
 using Microsoft.Extensions.Configuration;
 
-namespace HotelBooking.Business.Services
+namespace HotelBooking.Web.Notifications
 {
     public class SmtpEmailSender : IEmailSender
     {
@@ -14,7 +13,7 @@ namespace HotelBooking.Business.Services
             _configuration = configuration;
         }
 
-        public async Task<bool> SendAsync(string to, string subject, string body)
+        public async Task<bool> SendAsync(string to, string subject, string htmlBody, string? plainBody = null)
         {
             try
             {
@@ -34,7 +33,11 @@ namespace HotelBooking.Business.Services
                     EnableSsl = enableSsl,
                     Credentials = new NetworkCredential(user, password)
                 };
-                using var message = new MailMessage(from, to, subject, body);
+                using var message = new MailMessage(from, to, subject, htmlBody) { IsBodyHtml = true };
+
+                if (!string.IsNullOrWhiteSpace(plainBody))
+                    message.AlternateViews.Add(
+                        AlternateView.CreateAlternateViewFromString(plainBody, null, "text/plain"));
 
                 await client.SendMailAsync(message);
                 return true;

@@ -1,4 +1,4 @@
-﻿namespace HotelBooking.Business.Interfaces
+﻿namespace HotelBooking.Web.Notifications
 {
     public interface IEmailSender
     {
