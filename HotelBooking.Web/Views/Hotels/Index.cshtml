@@ -1,19 +1,27 @@
 @model List<HotelBooking.Business.DTOs.Hotels.HotelDto>
-@{ ViewData["Title"] = "Hoteles"; }
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3 mb-0">Hoteles</h1>
     <a asp-action="Create" class="btn btn-primary">Nuevo hotel</a>
 </div>
-<table class="table table-striped bg-white align-middle">
-    <thead><tr><th>Nombre</th><th>Dirección</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
-    <tbody>
-    @foreach (var h in Model)
-    {
-        <tr>
-            <td>@h.Name</td>
-            <td>@h.Address</td>
-            <td><span class="badge bg-@(h.IsActive ? "success" : "secondary")">@(h.IsActive ? "Activo" : "Inactivo")</span></td>
-            <td class="text-end">
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay hoteles registrados.</div>
+}
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+@foreach (var h in Model)
+{
+    var cardStyle = h.IsActive ? "" : "opacity:.65";
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0 overflow-hidden" style="@cardStyle">
+            <div class="p-4 text-white" style="background:linear-gradient(135deg,#0f172a,#1d4ed8)">
+                <div class="text-warning fs-5" title="@h.Stars estrellas">@UiHelpers.Stars(h.Stars)</div>
+                <h2 class="h4 mb-0">@h.Name</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-2">@h.Address</p>
+                <span class="badge bg-@(h.IsActive ? "success" : "secondary")">@(h.IsActive ? "Activo" : "Inactivo")</span>
+            </div>
+            <div class="card-footer bg-white border-0 d-flex flex-wrap gap-2">
                 <a asp-controller="Blocks" asp-action="Index" asp-route-hotelId="@h.Id" class="btn btn-sm btn-outline-dark">Bloques</a>
                 <a asp-action="Edit" asp-route-id="@h.Id" class="btn btn-sm btn-outline-primary">Editar</a>
                 <form asp-action="SetActive" method="post" class="d-inline">
@@ -21,9 +29,8 @@
                     <input type="hidden" name="isActive" value="@((!h.IsActive).ToString().ToLower())" />
                     <button class="btn btn-sm btn-outline-@(h.IsActive ? "danger" : "success")">@(h.IsActive ? "Desactivar" : "Activar")</button>
                 </form>
-            </td>
-        </tr>
-    }
-    @if (!Model.Any()) { <tr><td colspan="4" class="text-center text-muted">No hay hoteles registrados.</td></tr> }
-    </tbody>
-</table>
+            </div>
+        </div>
+    </div>
+}
+</div>

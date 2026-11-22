@@ -39,7 +39,7 @@ namespace HotelBooking.Data.Repositories
         {
             try
             {
-                var list = await _context.Set<T>().AsNoTracking().ToListAsync();
+                var list = await _context.Set<T>().AsNoTracking().OrderByDescending(e => e.Id).ToListAsync();
                 return OperationResult<List<T>>.Ok(list);
             }
             catch (Exception)
@@ -89,7 +89,9 @@ namespace HotelBooking.Data.Repositories
                 if (!await _context.Set<T>().AnyAsync(e => e.Id == entity.Id))
                     return OperationResult<T>.NotFound(DataMessages.NotFound);
 
-                _context.Set<T>().Update(entity);
+                var entry = _context.Entry(entity);
+                if (entry.State == EntityState.Detached)
+                    entry.State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return OperationResult<T>.Ok(entity, DataMessages.Updated);
             }

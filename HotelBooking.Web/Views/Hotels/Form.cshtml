@@ -1,10 +1,11 @@
 @model HotelFormViewModel
 @{
-    var formAction = ViewData["FormAction"]?.ToString() ?? "Create";
-    var formId = ViewData["Id"]?.ToString();
+    var isEdit = Model.Id.HasValue;
+    var formAction = isEdit ? "Edit" : "Create";
+    var title = isEdit ? "Editar hotel" : "Nuevo hotel";
 }
-<h1 class="h3 mb-3">@ViewData["Title"]</h1>
-<form asp-action="@formAction" asp-route-id="@formId" method="post" class="card card-body shadow-sm" style="max-width:600px">
+<h1 class="h3 mb-3">@title</h1>
+<form asp-action="@formAction" asp-route-id="@Model.Id" method="post" class="card card-body shadow-sm" style="max-width:600px">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <div class="mb-3">
         <label asp-for="Name" class="form-label">Nombre</label>
@@ -15,6 +16,16 @@
         <label asp-for="Address" class="form-label">Dirección</label>
         <input asp-for="Address" class="form-control" />
         <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Stars" class="form-label">Estrellas</label>
+        <select asp-for="Stars" class="form-select">
+            @for (var i = 1; i <= 5; i++)
+            {
+                <option value="@i">@i @(i == 1 ? "estrella" : "estrellas")</option>
+            }
+        </select>
+        <span asp-validation-for="Stars" class="text-danger"></span>
     </div>
     <div><button class="btn btn-primary">Guardar</button> <a asp-action="Index" class="btn btn-link">Cancelar</a></div>
 </form>

@@ -6,7 +6,7 @@ namespace HotelBooking.Web.Constants
     {
         public const string Administrator = nameof(EmployeeRole.Administrator);
         public const string Receptionist = nameof(EmployeeRole.Receptionist);
-
+        public const string Guest = "Guest";
         public const string Staff = Administrator + "," + Receptionist;
     }
 }

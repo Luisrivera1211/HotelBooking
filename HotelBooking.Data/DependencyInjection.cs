@@ -23,6 +23,7 @@ namespace HotelBooking.Data
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 
             return services;
         }

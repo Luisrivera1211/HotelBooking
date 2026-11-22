@@ -27,6 +27,7 @@ namespace HotelBooking.Data.Repositories
 
                 var floors = await _context.Floors.AsNoTracking()
                     .Where(f => f.BlockId == blockId)
+                    .OrderByDescending(x => x.Id)
                     .ToListAsync();
                 return OperationResult<List<Floor>>.Ok(floors);
             }

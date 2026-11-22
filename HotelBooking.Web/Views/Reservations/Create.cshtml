@@ -1,17 +1,29 @@
 @model NewReservationViewModel
-@{ ViewData["Title"] = "Nueva reserva"; }
 <h1 class="h3 mb-3">Nueva reserva</h1>
 <form asp-action="Create" method="post" class="card card-body shadow-sm" style="max-width:640px">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <input asp-for="RoomId" type="hidden" />
     <input asp-for="RoomLabel" type="hidden" />
     <p class="fw-semibold">@Model.RoomLabel</p>
-    <div class="mb-3">
-        <label asp-for="Document" class="form-label">Documento del huésped</label>
-        <input asp-for="Document" class="form-control" />
-        <span asp-validation-for="Document" class="text-danger"></span>
-        <div class="form-text">Si el huésped no existe, <a asp-controller="Guests" asp-action="Create" target="_blank">regístrelo primero</a>.</div>
-    </div>
+    @if (Model.IsGuestAccount)
+    {
+        <p class="mb-3">Reserva a nombre de <strong>@Model.GuestName</strong>.</p>
+    }
+    else
+    {
+        <div class="mb-3">
+            <label asp-for="Document" class="form-label">Huésped (documento)</label>
+            <input asp-for="Document" class="form-control" list="knownGuests" autocomplete="off" placeholder="Escriba el documento o el nombre y elija de la lista" />
+            <datalist id="knownGuests">
+                @foreach (var g in Model.KnownGuests)
+                {
+                    <option value="@g.Document">@g.FullName</option>
+                }
+            </datalist>
+            <span asp-validation-for="Document" class="text-danger"></span>
+            <div class="form-text">Si el huésped no está en la lista, <a asp-controller="Guests" asp-action="Create" target="_blank">regístrelo primero</a> y recargue esta página.</div>
+        </div>
+    }
     <div class="row">
         <div class="col-md-4 mb-3">
             <label asp-for="CheckIn" class="form-label">Entrada</label>

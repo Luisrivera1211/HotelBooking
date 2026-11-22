@@ -58,5 +58,35 @@ namespace HotelBooking.Web.Helpers
             NotificationStatus.Failed => "Fallida",
             _ => s.ToString()
         };
+
+        public static string AuditAction(string action) => action switch
+        {
+            "Create" => "Creó",
+            "Update" => "Modificó",
+            "Delete" => "Eliminó",
+            _ => action
+        };
+
+        public static string AuditEntity(string entity) => entity switch
+        {
+            "Reservation" => "Reserva",
+            "Room" => "Habitación",
+            "Notification" => "Notificación",
+            _ => entity
+        };
+
+        public static string Local(this DateTime utc) =>
+            DateTime.SpecifyKind(utc, DateTimeKind.Utc).ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss");
+
+        public static string Local(this DateTime? utc) => utc.HasValue ? utc.Value.Local() : "-";
+
+        public static string Stars(int stars)
+        {
+            var n = Math.Clamp(stars, 0, 5);
+            return new string('★', n) + new string('☆', 5 - n);
+        }
+
+        public static string[] FeatureList(string? features) =>
+            (features ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 }

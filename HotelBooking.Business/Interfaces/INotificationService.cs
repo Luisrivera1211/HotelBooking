@@ -10,3 +10,5 @@ namespace HotelBooking.Business.Interfaces
         Task<OperationResult<List<NotificationDto>>> GetByReservationAsync(int reservationId);
     }
 }
+
+

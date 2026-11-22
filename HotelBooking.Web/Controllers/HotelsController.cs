@@ -32,20 +32,20 @@ namespace HotelBooking.Web.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return FormView(new HotelFormViewModel(), "Nuevo hotel", nameof(Create), null);
+            return FormView(new HotelFormViewModel(), null);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(HotelFormViewModel dto)
         {
             if (!ModelState.IsValid)
-                return FormView(dto, "Nuevo hotel", nameof(Create), null);
+                return FormView(dto, null);
 
             var result = await _hotelService.CreateAsync(dto.ToDto());
             if (!result.Success)
             {
                 AddError(result);
-                return FormView(dto, "Nuevo hotel", nameof(Create), null);
+                return FormView(dto, null);
             }
 
             FlashOk(result.Message);
@@ -59,21 +59,21 @@ namespace HotelBooking.Web.Controllers
             if (!result.Success)
                 return RedirectError(result.Message, nameof(Index));
 
-            var dto = new HotelFormViewModel { Name = result.Data!.Name, Address = result.Data.Address };
-            return FormView(dto, "Editar hotel", nameof(Edit), id);
+            var dto = new HotelFormViewModel { Name = result.Data!.Name, Address = result.Data.Address, Stars = result.Data.Stars };
+            return FormView(dto, id);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, HotelFormViewModel dto)
         {
             if (!ModelState.IsValid)
-                return FormView(dto, "Editar hotel", nameof(Edit), id);
+                return FormView(dto, id);
 
             var result = await _hotelService.UpdateAsync(id, dto.ToDto());
             if (!result.Success)
             {
                 AddError(result);
-                return FormView(dto, "Editar hotel", nameof(Edit), id);
+                return FormView(dto, id);
             }
 
             FlashOk(result.Message);
@@ -87,11 +87,9 @@ namespace HotelBooking.Web.Controllers
             return FlashAndRedirect(result, isActive ? "Hotel activado." : "Hotel desactivado.", nameof(Index));
         }
 
-        private ViewResult FormView(HotelFormViewModel dto, string title, string action, int? id)
+        private ViewResult FormView(HotelFormViewModel dto, int? id)
         {
-            ViewData["Title"] = title;
-            ViewData["FormAction"] = action;
-            ViewData["Id"] = id;
+            dto.Id = id;
             return View("Form", dto);
         }
     }

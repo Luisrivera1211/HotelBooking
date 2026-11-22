@@ -1,7 +1,6 @@
-@model List<HotelBooking.Business.DTOs.Floor.FloorDto>
+@model FloorsIndexViewModel
 @{
-    var block = (HotelBooking.Business.DTOs.Block.BlockDto)ViewData["Block"]!;
-    ViewData["Title"] = "Pisos";
+    var block = Model.Block;
 }
 <nav aria-label="breadcrumb"><ol class="breadcrumb">
     <li class="breadcrumb-item"><a asp-controller="Hotels" asp-action="Index">Hoteles</a></li>
@@ -15,7 +14,7 @@
 <table class="table table-striped bg-white align-middle">
     <thead><tr><th>Número</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
     <tbody>
-    @foreach (var f in Model)
+    @foreach (var f in Model.Floors)
     {
         <tr>
             <td>Piso @f.Number</td>
@@ -31,6 +30,6 @@
             </td>
         </tr>
     }
-    @if (!Model.Any()) { <tr><td colspan="3" class="text-center text-muted">Este bloque no tiene pisos.</td></tr> }
+    @if (!Model.Floors.Any()) { <tr><td colspan="3" class="text-center text-muted">Este bloque no tiene pisos.</td></tr> }
     </tbody>
 </table>

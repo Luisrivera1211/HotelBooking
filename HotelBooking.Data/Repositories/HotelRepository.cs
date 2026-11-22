@@ -21,6 +21,8 @@ namespace HotelBooking.Data.Repositories
                 return DataMessages.Required("Dirección");
             if (hotel.Address.Length > 100)
                 return DataMessages.TooLong("Dirección", 100);
+            if (hotel.Stars < 1 || hotel.Stars > 5)
+                return "Las estrellas del hotel deben estar entre 1 y 5.";
             return null;
         }
 
@@ -31,6 +33,7 @@ namespace HotelBooking.Data.Repositories
                 var hotels = await _context.Hotels
                     .AsNoTracking()
                     .Where(h => h.IsActive)
+                    .OrderByDescending(x => x.Id)
                     .ToListAsync();
                 return OperationResult<List<Hotel>>.Ok(hotels);
             }

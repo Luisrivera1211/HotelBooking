@@ -18,7 +18,6 @@ namespace HotelBooking.Web.Controllers
             _blockService = blockService;
             _hotelService = hotelService;
         }
-
         public async Task<IActionResult> Index(int hotelId)
         {
             var hotel = await _hotelService.GetByIdAsync(hotelId);
@@ -29,27 +28,30 @@ namespace HotelBooking.Web.Controllers
             if (!blocks.Success)
                 ShowError(blocks.Message);
 
-            ViewData["Hotel"] = hotel.Data;
-            return View(blocks.Success ? blocks.Data : new List<BlockDto>());
+            return View(new BlocksIndexViewModel
+            {
+                Hotel = hotel.Data!,
+                Blocks = blocks.Success ? blocks.Data! : new List<BlockDto>()
+            });
         }
 
         [HttpGet]
         public IActionResult Create(int hotelId)
         {
-            return FormView(new BlockFormViewModel { HotelId = hotelId }, "Nuevo bloque", nameof(Create), null);
+            return FormView(new BlockFormViewModel { HotelId = hotelId }, null);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(BlockFormViewModel dto)
         {
             if (!ModelState.IsValid)
-                return FormView(dto, "Nuevo bloque", nameof(Create), null);
+                return FormView(dto, null);
 
             var result = await _blockService.CreateAsync(dto.ToDto());
             if (!result.Success)
             {
                 AddError(result);
-                return FormView(dto, "Nuevo bloque", nameof(Create), null);
+                return FormView(dto, null);
             }
 
             FlashOk(result.Message);
@@ -64,20 +66,20 @@ namespace HotelBooking.Web.Controllers
                 return RedirectError(result.Message, "Index", "Hotels");
 
             var dto = new BlockFormViewModel { Name = result.Data!.Name, HotelId = result.Data.HotelId };
-            return FormView(dto, "Editar bloque", nameof(Edit), id);
+            return FormView(dto, id);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, BlockFormViewModel dto)
         {
             if (!ModelState.IsValid)
-                return FormView(dto, "Editar bloque", nameof(Edit), id);
+                return FormView(dto, id);
 
             var result = await _blockService.UpdateAsync(id, dto.ToDto());
             if (!result.Success)
             {
                 AddError(result);
-                return FormView(dto, "Editar bloque", nameof(Edit), id);
+                return FormView(dto, id);
             }
 
             FlashOk(result.Message);
@@ -92,11 +94,9 @@ namespace HotelBooking.Web.Controllers
                 nameof(Index), routeValues: new { hotelId });
         }
 
-        private ViewResult FormView(BlockFormViewModel dto, string title, string action, int? id)
+        private ViewResult FormView(BlockFormViewModel dto, int? id)
         {
-            ViewData["Title"] = title;
-            ViewData["FormAction"] = action;
-            ViewData["Id"] = id;
+            dto.Id = id;
             return View("Form", dto);
         }
     }

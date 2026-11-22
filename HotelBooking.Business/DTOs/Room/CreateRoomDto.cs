@@ -7,5 +7,9 @@
         public int RoomTypeId { get; set; }
 
         public string Number { get; set; } = string.Empty;
+
+        public string Description { get; set; } = string.Empty;
+
+        public string Features { get; set; } = string.Empty;
     }
 }

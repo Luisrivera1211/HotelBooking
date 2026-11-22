@@ -32,20 +32,20 @@ namespace HotelBooking.Web.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return FormView(new RoomTypeFormViewModel(), "Nuevo tipo de habitación", nameof(Create), null);
+            return FormView(new RoomTypeFormViewModel(), null);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(RoomTypeFormViewModel dto)
         {
             if (!ModelState.IsValid)
-                return FormView(dto, "Nuevo tipo de habitación", nameof(Create), null);
+                return FormView(dto, null);
 
             var result = await _roomTypeService.CreateAsync(dto.ToDto());
             if (!result.Success)
             {
                 AddError(result);
-                return FormView(dto, "Nuevo tipo de habitación", nameof(Create), null);
+                return FormView(dto, null);
             }
 
             FlashOk(result.Message);
@@ -65,31 +65,29 @@ namespace HotelBooking.Web.Controllers
                 Capacity = result.Data.Capacity,
                 RatePerNight = result.Data.RatePerNight
             };
-            return FormView(dto, "Editar tipo de habitación", nameof(Edit), id);
+            return FormView(dto, id);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, RoomTypeFormViewModel dto)
         {
             if (!ModelState.IsValid)
-                return FormView(dto, "Editar tipo de habitación", nameof(Edit), id);
+                return FormView(dto, id);
 
             var result = await _roomTypeService.UpdateAsync(id, dto.ToDto());
             if (!result.Success)
             {
                 AddError(result);
-                return FormView(dto, "Editar tipo de habitación", nameof(Edit), id);
+                return FormView(dto, id);
             }
 
             FlashOk(result.Message);
             return RedirectToAction(nameof(Index));
         }
 
-        private ViewResult FormView(RoomTypeFormViewModel dto, string title, string action, int? id)
+        private ViewResult FormView(RoomTypeFormViewModel dto, int? id)
         {
-            ViewData["Title"] = title;
-            ViewData["FormAction"] = action;
-            ViewData["Id"] = id;
+            dto.Id = id;
             return View("Form", dto);
         }
     }

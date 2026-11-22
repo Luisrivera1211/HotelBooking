@@ -12,6 +12,8 @@ namespace HotelBooking.Business.Mappers
             RoomTypeId = room.RoomTypeId,
             Number = room.Number,
             Status = room.Status,
+            Description = room.Description,
+            Features = room.Features,
             RoomTypeName = type.Name,
             Capacity = type.Capacity,
             RatePerNight = type.RatePerNight

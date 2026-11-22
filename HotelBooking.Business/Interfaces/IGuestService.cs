@@ -1,4 +1,5 @@
-﻿using HotelBooking.Business.DTOs.Guest;
+﻿using HotelBooking.Business.DTOs.Employee;
+using HotelBooking.Business.DTOs.Guest;
 using HotelBooking.Data.Results;
 
 namespace HotelBooking.Business.Interfaces
@@ -10,5 +11,7 @@ namespace HotelBooking.Business.Interfaces
         Task<OperationResult<GuestDto>> GetByDocumentAsync(string document);
         Task<OperationResult<List<GuestDto>>> GetAllAsync();
         Task<OperationResult<GuestDto>> UpdateAsync(int id, CreateGuestDto dto);
+        Task<OperationResult<GuestDto>> RegisterAccountAsync(RegisterGuestAccountDto dto);
+        Task<OperationResult<GuestDto>> LoginAsync(LoginDto dto);
     }
 }

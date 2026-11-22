@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using HotelBooking.Business.DTOs.Guest;
 
 namespace HotelBooking.Web.Models
 {
@@ -19,7 +20,9 @@ namespace HotelBooking.Web.Models
 
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad de huéspedes debe ser mayor que cero.")]
         public int GuestCount { get; set; } = 1;
-
         public string RoomLabel { get; set; } = string.Empty;
+        public bool IsGuestAccount { get; set; }
+        public string GuestName { get; set; } = string.Empty;
+        public List<GuestDto> KnownGuests { get; set; } = new();
     }
 }

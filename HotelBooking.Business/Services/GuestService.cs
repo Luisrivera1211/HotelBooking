@@ -1,4 +1,5 @@
-﻿using HotelBooking.Business.DTOs.Guest;
+﻿using HotelBooking.Business.DTOs.Employee;
+using HotelBooking.Business.DTOs.Guest;
 using HotelBooking.Business.Helpers;
 using HotelBooking.Business.Interfaces;
 using HotelBooking.Business.Results;
@@ -57,7 +58,6 @@ namespace HotelBooking.Business.Services
 
             return OperationResult<GuestDto>.Ok(ToDto(found.Data!));
         }
-
         public async Task<OperationResult<GuestDto>> GetByDocumentAsync(string document)
         {
             var found = await _guestRepository.GetByDocumentAsync(document);
@@ -110,6 +110,82 @@ namespace HotelBooking.Business.Services
                 return OperationResult<GuestDto>.Fail(updated.Message, updated.ErrorType);
 
             return OperationResult<GuestDto>.Ok(ToDto(updated.Data!), updated.Message);
+        }
+        public async Task<OperationResult<GuestDto>> RegisterAccountAsync(RegisterGuestAccountDto dto)
+        {
+            if (dto is null)
+                return OperationResult<GuestDto>.Validation(DataMessages.EntityRequired);
+
+            var email = dto.Email?.Trim().ToLowerInvariant() ?? string.Empty;
+            var document = dto.Document?.Trim() ?? string.Empty;
+            var password = dto.Password ?? string.Empty;
+
+            if (!InputValidator.IsValidEmail(email))
+                return OperationResult<GuestDto>.Validation(ErrorMessages.InvalidEmail);
+            if (password.Length < 8)
+                return OperationResult<GuestDto>.Validation(ErrorMessages.PasswordTooShort);
+            if (password != dto.ConfirmPassword)
+                return OperationResult<GuestDto>.Validation(ErrorMessages.PasswordMismatch);
+
+            var withAccount = await _guestRepository.GetByEmailWithAccountAsync(email);
+            if (!withAccount.Success)
+                return OperationResult<GuestDto>.Fail(withAccount.Message, withAccount.ErrorType);
+            if (withAccount.Data is not null)
+                return OperationResult<GuestDto>.Conflict(ErrorMessages.GuestAccountExists);
+
+            var byDocument = await _guestRepository.GetByDocumentAsync(document);
+            if (!byDocument.Success)
+                return OperationResult<GuestDto>.Fail(byDocument.Message, byDocument.ErrorType);
+
+            Guest guest;
+            if (byDocument.Data is null)
+            {
+                guest = new Guest
+                {
+                    FullName = dto.FullName?.Trim() ?? string.Empty,
+                    Document = document,
+                    Email = email,
+                    Phone = dto.Phone?.Trim() ?? string.Empty,
+                    PasswordHash = PasswordHasher.Hash(password)
+                };
+
+                var created = await _guestRepository.SaveEntityAsync(guest);
+                if (!created.Success)
+                    return OperationResult<GuestDto>.Fail(created.Message, created.ErrorType);
+
+                return OperationResult<GuestDto>.Ok(ToDto(created.Data!), created.Message);
+            }
+
+            guest = byDocument.Data;
+            if (guest.PasswordHash is not null)
+                return OperationResult<GuestDto>.Conflict(ErrorMessages.GuestDocumentHasAccount);
+            if (!string.Equals(guest.Email, email, StringComparison.OrdinalIgnoreCase))
+                return OperationResult<GuestDto>.Conflict(ErrorMessages.GuestDocumentOtherEmail);
+
+            guest.PasswordHash = PasswordHasher.Hash(password);
+
+            var linked = await _guestRepository.UpdateEntityAsync(guest);
+            if (!linked.Success)
+                return OperationResult<GuestDto>.Fail(linked.Message, linked.ErrorType);
+
+            return OperationResult<GuestDto>.Ok(ToDto(linked.Data!), linked.Message);
+        }
+
+        public async Task<OperationResult<GuestDto>> LoginAsync(LoginDto dto)
+        {
+            if (dto is null
+                || string.IsNullOrWhiteSpace(dto.Email)
+                || string.IsNullOrEmpty(dto.Password))
+                return OperationResult<GuestDto>.Validation(ErrorMessages.InvalidCredentials);
+
+            var found = await _guestRepository.GetByEmailWithAccountAsync(dto.Email);
+            if (!found.Success)
+                return OperationResult<GuestDto>.Fail(found.Message, found.ErrorType);
+
+            if (found.Data is null || !PasswordHasher.Verify(dto.Password, found.Data.PasswordHash!))
+                return OperationResult<GuestDto>.Validation(ErrorMessages.InvalidCredentials);
+
+            return OperationResult<GuestDto>.Ok(ToDto(found.Data));
         }
 
         private static GuestDto ToDto(Guest guest) => new()

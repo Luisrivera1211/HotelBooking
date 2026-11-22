@@ -18,6 +18,10 @@ namespace HotelBooking.Data.Repositories
                 return DataMessages.Required("Número");
             if (room.Number.Length > 50)
                 return DataMessages.TooLong("Número", 50);
+            if (room.Description is { Length: > 300 })
+                return DataMessages.TooLong("Descripción", 300);
+            if (room.Features is { Length: > 300 })
+                return DataMessages.TooLong("Características", 300);
             return null;
         }
 
@@ -30,6 +34,7 @@ namespace HotelBooking.Data.Repositories
 
                 var rooms = await _context.Rooms.AsNoTracking()
                     .Where(r => r.FloorId == floorId)
+                    .OrderByDescending(x => x.Id)
                     .ToListAsync();
                 return OperationResult<List<Room>>.Ok(rooms);
             }

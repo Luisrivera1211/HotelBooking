@@ -30,7 +30,6 @@ namespace HotelBooking.Web.Controllers
 
             return View(result.Data);
         }
-
         public async Task<IActionResult> Details(int id)
         {
             var guest = await _guestService.GetByIdAsync(id);
@@ -51,20 +50,20 @@ namespace HotelBooking.Web.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return FormView(new GuestFormViewModel(), "Nuevo huésped", nameof(Create), null);
+            return FormView(new GuestFormViewModel(), null);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(GuestFormViewModel dto)
         {
             if (!ModelState.IsValid)
-                return FormView(dto, "Nuevo huésped", nameof(Create), null);
+                return FormView(dto, null);
 
             var result = await _guestService.CreateAsync(dto.ToDto());
             if (!result.Success)
             {
                 AddError(result);
-                return FormView(dto, "Nuevo huésped", nameof(Create), null);
+                return FormView(dto, null);
             }
 
             FlashOk(result.Message);
@@ -80,31 +79,29 @@ namespace HotelBooking.Web.Controllers
 
             var g = result.Data!;
             var dto = new GuestFormViewModel { FullName = g.FullName, Document = g.Document, Email = g.Email, Phone = g.Phone };
-            return FormView(dto, "Editar huésped", nameof(Edit), id);
+            return FormView(dto, id);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, GuestFormViewModel dto)
         {
             if (!ModelState.IsValid)
-                return FormView(dto, "Editar huésped", nameof(Edit), id);
+                return FormView(dto, id);
 
             var result = await _guestService.UpdateAsync(id, dto.ToDto());
             if (!result.Success)
             {
                 AddError(result);
-                return FormView(dto, "Editar huésped", nameof(Edit), id);
+                return FormView(dto, id);
             }
 
             FlashOk(result.Message);
             return RedirectToAction(nameof(Details), new { id });
         }
 
-        private ViewResult FormView(GuestFormViewModel dto, string title, string action, int? id)
+        private ViewResult FormView(GuestFormViewModel dto, int? id)
         {
-            ViewData["Title"] = title;
-            ViewData["FormAction"] = action;
-            ViewData["Id"] = id;
+            dto.Id = id;
             return View("Form", dto);
         }
     }

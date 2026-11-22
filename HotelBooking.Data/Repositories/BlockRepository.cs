@@ -30,6 +30,7 @@ namespace HotelBooking.Data.Repositories
                 var blocks = await _context.Blocks
                     .AsNoTracking()
                     .Where(b => b.HotelId == hotelId)
+                    .OrderByDescending(x => x.Id)
                     .ToListAsync();
                 return OperationResult<List<Block>>.Ok(blocks);
             }

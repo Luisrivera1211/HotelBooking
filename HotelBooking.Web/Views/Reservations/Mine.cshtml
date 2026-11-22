@@ -1,0 +1,25 @@
+﻿@model List<HotelBooking.Business.DTOs.Reservation.ReservationDto>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Mis reservas</h1>
+    <a asp-controller="Availability" asp-action="Index" class="btn btn-primary">Buscar habitaciones</a>
+</div>
+<div class="table-responsive">
+<table class="table table-striped bg-white align-middle">
+    <thead><tr><th>#</th><th>Habitación</th><th>Entrada</th><th>Salida</th><th>Total</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var r in Model)
+    {
+        <tr>
+            <td>@r.Id</td>
+            <td>@r.RoomNumber</td>
+            <td>@r.CheckIn.ToString("dd/MM/yyyy")</td>
+            <td>@r.CheckOut.ToString("dd/MM/yyyy")</td>
+            <td>@r.Total.ToString("C")</td>
+            <td><span class="badge bg-@r.Status.Badge()">@r.Status.Text()</span></td>
+            <td class="text-end"><a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-dark">Ver</a></td>
+        </tr>
+    }
+    @if (!Model.Any()) { <tr><td colspan="7" class="text-center text-muted">Aún no tiene reservas.</td></tr> }
+    </tbody>
+</table>
+</div>

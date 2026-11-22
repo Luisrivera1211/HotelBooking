@@ -1,3 +1,9 @@
+@{
+    var pageError = ViewContext.ModelState.TryGetValue(HotelBooking.Web.Controllers.AppController.PageErrorKey, out var entry)
+        ? entry.Errors.FirstOrDefault()?.ErrorMessage
+        : null;
+    var error = TempData["Error"] as string ?? pageError;
+}
 @if (TempData["Ok"] is string ok)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -5,7 +11,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
 }
-@if ((TempData["Error"] ?? ViewData["Error"]) is string error)
+@if (error is not null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         @error

@@ -14,5 +14,9 @@ namespace HotelBooking.Business.DTOs.Reservation
         public int GuestCount { get; set; }
         public decimal Total { get; set; }
         public ReservationStatus Status { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string? CreatedBy { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }

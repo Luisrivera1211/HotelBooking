@@ -18,7 +18,6 @@ namespace HotelBooking.Web.Controllers
             _floorService = floorService;
             _blockService = blockService;
         }
-
         public async Task<IActionResult> Index(int blockId)
         {
             var block = await _blockService.GetByIdAsync(blockId);
@@ -29,21 +28,22 @@ namespace HotelBooking.Web.Controllers
             if (!floors.Success)
                 ShowError(floors.Message);
 
-            ViewData["Block"] = block.Data;
-            return View(floors.Success ? floors.Data : new List<FloorDto>());
+            return View(new FloorsIndexViewModel
+            {
+                Block = block.Data!,
+                Floors = floors.Success ? floors.Data! : new List<FloorDto>()
+            });
         }
 
         [HttpGet]
         public IActionResult Create(int blockId)
         {
-            ViewData["Title"] = "Nuevo piso";
             return View(new FloorFormViewModel { BlockId = blockId });
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(FloorFormViewModel dto)
         {
-            ViewData["Title"] = "Nuevo piso";
             if (!ModelState.IsValid)
                 return View(dto);
 

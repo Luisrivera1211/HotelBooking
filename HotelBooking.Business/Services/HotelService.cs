@@ -33,6 +33,7 @@ namespace HotelBooking.Business.Services
             {
                 Name = name,
                 Address = dto.Address?.Trim() ?? string.Empty,
+                Stars = dto.Stars,
                 IsActive = true
             };
 
@@ -81,6 +82,7 @@ namespace HotelBooking.Business.Services
             var hotel = found.Data!;
             hotel.Name = name;
             hotel.Address = dto.Address?.Trim() ?? string.Empty;
+            hotel.Stars = dto.Stars;
 
             var updated = await _hotelRepository.UpdateEntityAsync(hotel);
             if (!updated.Success)
@@ -114,6 +116,7 @@ namespace HotelBooking.Business.Services
             Id = hotel.Id,
             Name = hotel.Name,
             Address = hotel.Address,
+            Stars = hotel.Stars,
             IsActive = hotel.IsActive
         };
     }

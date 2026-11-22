@@ -2,10 +2,16 @@
 @{
     var r = Model.Reservation;
     var editable = r.Status == ReservationStatus.Pending || r.Status == ReservationStatus.Confirmed;
-    ViewData["Title"] = $"Reserva #{r.Id}";
 }
 <nav aria-label="breadcrumb"><ol class="breadcrumb">
-    <li class="breadcrumb-item"><a asp-controller="Guests" asp-action="Details" asp-route-id="@r.GuestId">@r.GuestName</a></li>
+    @if (User.IsGuest())
+    {
+        <li class="breadcrumb-item"><a asp-controller="Reservations" asp-action="Mine">Mis reservas</a></li>
+    }
+    else
+    {
+        <li class="breadcrumb-item"><a asp-controller="Guests" asp-action="Details" asp-route-id="@r.GuestId">@r.GuestName</a></li>
+    }
     <li class="breadcrumb-item active">Reserva #@r.Id</li>
 </ol></nav>
 <div class="card card-body shadow-sm mb-4">
@@ -31,30 +37,51 @@
         <dt class="col-sm-3">Entrada</dt><dd class="col-sm-9">@r.CheckIn.ToString("dd/MM/yyyy")</dd>
         <dt class="col-sm-3">Salida</dt><dd class="col-sm-9">@r.CheckOut.ToString("dd/MM/yyyy")</dd>
         <dt class="col-sm-3">Huéspedes</dt><dd class="col-sm-9">@r.GuestCount</dd>
-        <dt class="col-sm-3">Total</dt><dd class="col-sm-9">@r.Total.ToDop()</dd>
+        <dt class="col-sm-3">Total</dt><dd class="col-sm-9">@r.Total.ToString("C")</dd>
     </dl>
+    @* La trazabilidad (quién creó y modificó) es solo para el personal *@
+    @if (!User.IsGuest())
+    {
+    <hr />
+    <dl class="row mb-0 small text-muted">
+        <dt class="col-sm-3">Creada</dt><dd class="col-sm-9">@r.CreatedAt.Local() por @(r.CreatedBy ?? "(sin sesión)")</dd>
+        <dt class="col-sm-3">Última modificación</dt>
+        <dd class="col-sm-9">@(r.UpdatedAt.HasValue ? r.UpdatedAt.Local() + " por " + (r.UpdatedBy ?? "(sin sesión)") : "Sin modificaciones")</dd>
+    </dl>
+    }
 </div>
 <h2 class="h5">Notificaciones</h2>
 <table class="table table-striped bg-white align-middle">
-    <thead><tr><th>Tipo</th><th>Mensaje</th><th>Estado</th><th>Enviada</th><th></th></tr></thead>
+    <thead><tr><th>Tipo</th><th>Canal</th><th>Mensaje</th><th>Estado</th><th>Enviada</th></tr></thead>
     <tbody>
     @foreach (var n in Model.Notifications)
     {
         <tr>
-            <td>@n.Type.Text()</td><td>@n.Message</td>
+            <td>@n.Type.Text()</td><td>@n.Channel</td><td>@n.Message</td>
             <td><span class="badge bg-@(n.Status == NotificationStatus.Sent ? "success" : n.Status == NotificationStatus.Failed ? "danger" : "warning text-dark")">@n.Status.Text()</span></td>
             <td>@(n.SentAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
-            <td class="text-end">
-                @if (n.Status == NotificationStatus.Failed)
-                {
-                    <form asp-action="ResendNotification" asp-route-id="@r.Id" method="post" class="d-inline">
-                        <input type="hidden" name="type" value="@n.Type" />
-                        <button class="btn btn-outline-primary btn-sm">Reenviar</button>
-                    </form>
-                }
-            </td>
         </tr>
     }
     @if (!Model.Notifications.Any()) { <tr><td colspan="5" class="text-center text-muted">Sin notificaciones.</td></tr> }
     </tbody>
 </table>
+
+@if (!User.IsGuest())
+{
+<h2 class="h5 mt-4">Historial de la reserva</h2>
+<table class="table table-striped table-sm bg-white align-middle">
+    <thead><tr><th>Fecha y hora</th><th>Usuario</th><th>Acción</th><th>Detalle</th></tr></thead>
+    <tbody>
+    @foreach (var h in Model.History)
+    {
+        <tr>
+            <td class="text-nowrap">@h.OccurredAt.Local()</td>
+            <td>@(h.UserName ?? "(sin sesión)")</td>
+            <td>@UiHelpers.AuditAction(h.Action)</td>
+            <td class="small">@h.Details</td>
+        </tr>
+    }
+    @if (!Model.History.Any()) { <tr><td colspan="4" class="text-center text-muted">Sin movimientos registrados.</td></tr> }
+    </tbody>
+</table>
+}

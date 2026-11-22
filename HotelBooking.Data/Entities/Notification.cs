@@ -3,23 +3,18 @@ using HotelBooking.Data.Enums;
 
 namespace HotelBooking.Data.Entities
 {
-    public sealed class Notification : AuditEntity
+    public sealed class Notification : AuditEntity, IAuditable
     {
         public NotificationType Type { get; set; }
 
+        public string Channel { get; set; } = "Email";
+
         public string Message { get; set; } = string.Empty;
-
         public DateTime? SentAt { get; set; }
-
         public NotificationStatus Status { get; set; }
-
         public int ReservationId { get; set; }
-
         public int GuestId { get; set; }
-
         public Reservation Reservation { get; set; } = null!;
-
         public Guest Guest { get; set; } = null!;
-
     }
 }

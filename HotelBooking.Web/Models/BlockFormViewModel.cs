@@ -3,9 +3,10 @@ using HotelBooking.Business.DTOs.Block;
 
 namespace HotelBooking.Web.Models
 {
-    
     public class BlockFormViewModel
     {
+        public int? Id { get; set; }
+
         [Required(ErrorMessage = "El nombre es obligatorio.")]
         [StringLength(50, ErrorMessage = "El nombre no puede superar 50 caracteres.")]
         public string Name { get; set; } = string.Empty;
@@ -15,8 +16,8 @@ namespace HotelBooking.Web.Models
 
         public CreateBlockDto ToDto() => new()
         {
-                Name = Name,
-                HotelId = HotelId,
+            Name = Name,
+            HotelId = HotelId,
         };
     }
 }

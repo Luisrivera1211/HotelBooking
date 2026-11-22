@@ -5,6 +5,8 @@ namespace HotelBooking.Web.Models
 {
     public class GuestFormViewModel
     {
+        public int? Id { get; set; }
+
         [Required(ErrorMessage = "El nombre es obligatorio.")]
         [StringLength(100, ErrorMessage = "El nombre no puede superar 100 caracteres.")]
         public string FullName { get; set; } = string.Empty;
@@ -24,10 +26,10 @@ namespace HotelBooking.Web.Models
 
         public CreateGuestDto ToDto() => new()
         {
-                FullName = FullName,
-                Document = Document,
-                Email = Email,
-                Phone = Phone,
+            FullName = FullName,
+            Document = Document,
+            Email = Email,
+            Phone = Phone,
         };
     }
 }

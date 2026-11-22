@@ -1,10 +1,42 @@
 @model AvailabilityViewModel
-@{ ViewData["Title"] = "Disponibilidad"; }
-<h1 class="h3 mb-3">Buscar disponibilidad</h1>
+<h1 class="h3 mb-3">Buscar habitación</h1>
+
+@* Paso 1: elegir hotel (tarjetas). Funciona sin sesión. *@
+<h2 class="h5">1. Elija un hotel</h2>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-4">
+@foreach (var h in Model.Hotels)
+{
+    var selected = h.Id == Model.Search.HotelId;
+    var border = selected ? "border-primary border-3" : "border-0";
+    <div class="col">
+        <a asp-action="Index" asp-route-hotelId="@h.Id" class="text-decoration-none">
+            <div class="card h-100 shadow-sm @border">
+                <div class="p-3 text-white" style="background:linear-gradient(135deg,#0f172a,#1d4ed8)">
+                    <div class="text-warning" title="@h.Stars estrellas">@UiHelpers.Stars(h.Stars)</div>
+                    <div class="h5 mb-0">@h.Name</div>
+                </div>
+                <div class="card-body py-2">
+                    <small class="text-muted">@h.Address</small>
+                    @if (selected)
+                    {
+                        <div><span class="badge bg-primary">Seleccionado</span></div>
+                    }
+                </div>
+            </div>
+        </a>
+    </div>
+}
+@if (!Model.Hotels.Any())
+{
+    <div class="col-12"><div class="alert alert-info mb-0">Aún no hay hoteles disponibles.</div></div>
+}
+</div>
+
+<h2 class="h5">2. Indique fechas y huéspedes</h2>
 <form asp-action="Index" method="post" class="card card-body shadow-sm mb-4">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <div class="row g-3 align-items-end">
-        <div class="col-md-3">
+        <div class="col-12 col-md-6 col-lg-3">
             <label asp-for="Search.HotelId" class="form-label">Hotel</label>
             <select asp-for="Search.HotelId" class="form-select">
                 <option value="0">-- Seleccione --</option>
@@ -15,22 +47,22 @@
             </select>
             <span asp-validation-for="Search.HotelId" class="text-danger"></span>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3 col-lg-2">
             <label asp-for="Search.CheckIn" class="form-label">Entrada</label>
             <input asp-for="Search.CheckIn" class="form-control" />
             <span asp-validation-for="Search.CheckIn" class="text-danger"></span>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3 col-lg-2">
             <label asp-for="Search.CheckOut" class="form-label">Salida</label>
             <input asp-for="Search.CheckOut" class="form-control" />
             <span asp-validation-for="Search.CheckOut" class="text-danger"></span>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-md-3 col-lg-2">
             <label asp-for="Search.GuestCount" class="form-label">Huéspedes</label>
             <input asp-for="Search.GuestCount" class="form-control" type="number" min="1" />
             <span asp-validation-for="Search.GuestCount" class="text-danger"></span>
         </div>
-        <div class="col-md-1"><button class="btn btn-primary w-100">Buscar</button></div>
+        <div class="col-6 col-md-3 col-lg-3"><button class="btn btn-primary w-100">Buscar</button></div>
     </div>
 </form>
 
@@ -42,25 +74,58 @@
     }
     else
     {
-        <table class="table table-striped bg-white align-middle">
-            <thead><tr><th>Habitación</th><th>Tipo</th><th>Capacidad</th><th>Tarifa por noche</th><th></th></tr></thead>
-            <tbody>
-            @foreach (var r in Model.Rooms)
-            {
-                <tr>
-                    <td>@r.Number</td><td>@r.RoomTypeName</td><td>@r.Capacity</td><td>@r.RatePerNight.ToDop()</td>
-                    <td class="text-end">
+        @if (User.Identity?.IsAuthenticated != true)
+        {
+            <div class="alert alert-info">
+                Puede ver y buscar habitaciones sin cuenta. Para reservar le pediremos
+                <a asp-controller="Account" asp-action="Login">iniciar sesión</a> o
+                <a asp-controller="Account" asp-action="RegisterGuest">crear una cuenta</a>.
+            </div>
+        }
+        <h2 class="h5">3. Elija su habitación</h2>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+        @foreach (var r in Model.Rooms)
+        {
+            var tip = string.IsNullOrWhiteSpace(r.Description) ? null : r.Description;
+            var toggle = tip is null ? null : "tooltip";
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0" data-bs-toggle="@toggle" data-bs-title="@tip" data-bs-placement="top">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="text-muted small">@r.RoomTypeName</div>
+                                <h3 class="h5 mb-0">Habitación @r.Number</h3>
+                            </div>
+                            <div class="text-end">
+                                <div class="h5 mb-0 text-success">@r.RatePerNight.ToString("C")</div>
+                                <small class="text-muted">por noche</small>
+                            </div>
+                        </div>
+                        <p class="small text-muted mt-2 mb-2">Capacidad: @r.Capacity @(r.Capacity == 1 ? "huésped" : "huéspedes")</p>
+                        <div>
+                            @foreach (var f in UiHelpers.FeatureList(r.Features))
+                            {
+                                <span class="badge text-bg-light border me-1 mb-1">@f</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0">
                         <a asp-controller="Reservations" asp-action="Create"
                            asp-route-roomId="@r.Id"
                            asp-route-checkIn="@Model.Search.CheckIn.ToString("yyyy-MM-dd")"
                            asp-route-checkOut="@Model.Search.CheckOut.ToString("yyyy-MM-dd")"
                            asp-route-guestCount="@Model.Search.GuestCount"
-                           class="btn btn-sm btn-success">Reservar</a>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+                           class="btn btn-success w-100">Reservar</a>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
     }
 }
-@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) { new bootstrap.Tooltip(el); });
+    </script>
+}

@@ -50,6 +50,25 @@ namespace HotelBooking.Data.Repositories
             }
         }
 
+        public async Task<OperationResult<Guest?>> GetByEmailWithAccountAsync(string email)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                    return OperationResult<Guest?>.Validation(DataMessages.Required("Correo"));
+
+                var normalized = email.Trim().ToLower();
+                var guest = await _context.Guests
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(g => g.PasswordHash != null && g.Email.ToLower() == normalized);
+                return OperationResult<Guest?>.Ok(guest);
+            }
+            catch (Exception)
+            {
+                return OperationResult<Guest?>.Unexpected(DataMessages.QueryError);
+            }
+        }
+
         public async Task<OperationResult<bool>> ExistsDocumentAsync(string document, int? excludeGuestId = null)
         {
             try

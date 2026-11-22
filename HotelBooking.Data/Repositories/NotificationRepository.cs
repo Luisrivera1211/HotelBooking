@@ -18,6 +18,10 @@ namespace HotelBooking.Data.Repositories
                 return DataMessages.Required("Mensaje");
             if (notification.Message.Length > 255)
                 return DataMessages.TooLong("Mensaje", 255);
+            if (string.IsNullOrWhiteSpace(notification.Channel))
+                return DataMessages.Required("Canal");
+            if (notification.Channel.Length > 30)
+                return DataMessages.TooLong("Canal", 30);
             return null;
         }
 
@@ -31,6 +35,7 @@ namespace HotelBooking.Data.Repositories
                 var notifications = await _context.Notifications
                     .AsNoTracking()
                     .Where(n => n.ReservationId == reservationId)
+                    .OrderByDescending(n => n.CreatedAt)
                     .ToListAsync();
                 return OperationResult<List<Notification>>.Ok(notifications);
             }
@@ -40,16 +45,19 @@ namespace HotelBooking.Data.Repositories
             }
         }
 
-        public async Task<OperationResult<bool>> ExistsSentAsync(int reservationId, NotificationType type)
+        public async Task<OperationResult<bool>> ExistsSentAsync(int reservationId, NotificationType type, string channel)
         {
             try
             {
                 if (reservationId <= 0)
                     return OperationResult<bool>.Validation(DataMessages.InvalidId);
+                if (string.IsNullOrWhiteSpace(channel))
+                    return OperationResult<bool>.Validation(DataMessages.Required("Canal"));
 
                 var exists = await _context.Notifications.AnyAsync(n =>
                     n.ReservationId == reservationId
                     && n.Type == type
+                    && n.Channel == channel
                     && n.Status == NotificationStatus.Sent);
                 return OperationResult<bool>.Ok(exists);
             }

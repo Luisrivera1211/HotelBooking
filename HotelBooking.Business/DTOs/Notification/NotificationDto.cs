@@ -6,6 +6,7 @@ namespace HotelBooking.Business.DTOs.Notification
     {
         public int Id { get; set; }
         public NotificationType Type { get; set; }
+        public string Channel { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
         public DateTime? SentAt { get; set; }
         public NotificationStatus Status { get; set; }

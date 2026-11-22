@@ -3,9 +3,10 @@ using HotelBooking.Business.DTOs.Reservation;
 
 namespace HotelBooking.Web.Models
 {
-
     public class ReservationEditViewModel
     {
+        public int Id { get; set; }
+
         [Range(1, int.MaxValue, ErrorMessage = "Seleccione una habitación.")]
         public int RoomId { get; set; }
 
@@ -20,10 +21,10 @@ namespace HotelBooking.Web.Models
 
         public ModifyReservationDto ToDto() => new()
         {
-                RoomId = RoomId,
-                CheckIn = CheckIn,
-                CheckOut = CheckOut,
-                GuestCount = GuestCount,
+            RoomId = RoomId,
+            CheckIn = CheckIn,
+            CheckOut = CheckOut,
+            GuestCount = GuestCount,
         };
     }
 }

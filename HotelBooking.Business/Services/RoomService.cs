@@ -44,6 +44,8 @@ namespace HotelBooking.Business.Services
                 FloorId = dto.FloorId,
                 RoomTypeId = dto.RoomTypeId,
                 Number = number,
+                Description = dto.Description?.Trim() ?? string.Empty,
+                Features = dto.Features?.Trim() ?? string.Empty,
                 Status = RoomStatus.Available   
             };
 
@@ -69,7 +71,6 @@ namespace HotelBooking.Business.Services
             if (!rooms.Success)
                 return OperationResult<List<RoomDto>>.Fail(rooms.Message, rooms.ErrorType);
 
-            
             var types = await _roomTypeRepository.GetAllAsync();
             if (!types.Success)
                 return OperationResult<List<RoomDto>>.Fail(types.Message, types.ErrorType);
@@ -101,6 +102,8 @@ namespace HotelBooking.Business.Services
             room.FloorId = dto.FloorId;
             room.RoomTypeId = dto.RoomTypeId;
             room.Number = number;
+            room.Description = dto.Description?.Trim() ?? string.Empty;
+            room.Features = dto.Features?.Trim() ?? string.Empty;
 
             var updated = await _roomRepository.UpdateEntityAsync(room);
             if (!updated.Success)
@@ -108,7 +111,6 @@ namespace HotelBooking.Business.Services
 
             return OperationResult<RoomDto>.Ok(RoomMapper.ToDto(updated.Data!, check.Data!), updated.Message);
         }
-
         public async Task<OperationResult<RoomDto>> ChangeStatusAsync(int id, ChangeRoomStatusDto dto)
         {
             if (dto is null)
@@ -136,7 +138,6 @@ namespace HotelBooking.Business.Services
             return await ToDtoAsync(room, string.Empty);
         }
 
-        
         private async Task<OperationResult<RoomType>> ValidateAsync(int floorId, int roomTypeId, string number, int? excludeRoomId)
         {
             var floor = await _floorRepository.GetEntityByIdAsync(floorId);
@@ -149,12 +150,10 @@ namespace HotelBooking.Business.Services
             if (!type.Success)
                 return OperationResult<RoomType>.Fail(type.Message, type.ErrorType);
 
-            
             var block = await _blockRepository.GetEntityByIdAsync(floor.Data.BlockId);
             if (!block.Success)
                 return OperationResult<RoomType>.Fail(block.Message, block.ErrorType);
 
-           
             var exists = await _roomRepository.ExistsNumberInHotelAsync(block.Data!.HotelId, number, excludeRoomId);
             if (!exists.Success)
                 return OperationResult<RoomType>.Fail(exists.Message, exists.ErrorType);

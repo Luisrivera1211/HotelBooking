@@ -1,13 +1,12 @@
 using HotelBooking.Business.DTOs.Availability;
 using HotelBooking.Business.Interfaces;
-using HotelBooking.Web.Constants;
 using HotelBooking.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.Web.Controllers
 {
-    [Authorize(Roles = Roles.Staff)]
+    [AllowAnonymous]
     public class AvailabilityController : AppController
     {
         private readonly IAvailabilityService _availabilityService;
@@ -20,10 +19,11 @@ namespace HotelBooking.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? hotelId)
         {
             var search = new AvailabilitySearchViewModel
             {
+                HotelId = hotelId ?? 0,
                 CheckIn = DateTime.Today,
                 CheckOut = DateTime.Today.AddDays(1),
                 GuestCount = 1
@@ -31,7 +31,6 @@ namespace HotelBooking.Web.Controllers
             return await BuildView(search, rooms: null);
         }
 
-        
         [HttpPost]
         public async Task<IActionResult> Index([Bind(Prefix = nameof(AvailabilityViewModel.Search))] AvailabilitySearchViewModel search)
         {
@@ -54,7 +53,6 @@ namespace HotelBooking.Web.Controllers
             if (!hotels.Success)
                 ShowError(hotels.Message);
 
-            ViewData["Title"] = "Disponibilidad";
             return View(new AvailabilityViewModel
             {
                 Search = search,

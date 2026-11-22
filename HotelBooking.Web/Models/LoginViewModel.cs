@@ -12,11 +12,12 @@ namespace HotelBooking.Web.Models
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
+        public string? ReturnUrl { get; set; }
 
         public LoginDto ToDto() => new()
         {
-                Email = Email,
-                Password = Password,
+            Email = Email,
+            Password = Password,
         };
     }
 }
