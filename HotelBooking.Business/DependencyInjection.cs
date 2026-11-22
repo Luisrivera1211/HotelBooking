@@ -18,7 +18,6 @@ namespace HotelBooking.Business
             services.AddScoped<IAvailabilityService, AvailabilityService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IReservationService, ReservationService>();
-            services.AddScoped<IEmailSender, SmtpEmailSender>();
 
             return services;
         }
