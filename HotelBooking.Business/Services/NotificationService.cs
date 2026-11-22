@@ -14,10 +14,12 @@ namespace HotelBooking.Business.Services
         private readonly INotificationRepository _notificationRepository;
         private readonly IReservationRepository _reservationRepository;
         private readonly IEnumerable<INotificationChannel> _channels;
+        private readonly INotificationService _notificationService;
 
         public NotificationService(
             INotificationRepository notificationRepository,
             IReservationRepository reservationRepository,
+            INotificationService notificationService
             IEnumerable<INotificationChannel> channels)
         {
             _notificationRepository = notificationRepository;
