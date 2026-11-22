@@ -19,7 +19,7 @@ namespace HotelBooking.Business.Services
         public NotificationService(
             INotificationRepository notificationRepository,
             IReservationRepository reservationRepository,
-            INotificationService notificationService
+            INotificationService notificationService,
             IEnumerable<INotificationChannel> channels)
         {
             _notificationRepository = notificationRepository;
