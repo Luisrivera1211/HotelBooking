@@ -2,9 +2,9 @@
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
 
-namespace HotelBooking.Web.Notifications
+namespace HotelBooking.Business.Services.Channels
 {
-    public class SmtpEmailSender : IEmailSender
+    internal class SmtpEmailSender : IEmailSender
     {
         private readonly IConfiguration _configuration;
 

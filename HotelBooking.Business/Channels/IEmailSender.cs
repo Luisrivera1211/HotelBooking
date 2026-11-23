@@ -1,6 +1,6 @@
-﻿namespace HotelBooking.Web.Notifications
+﻿namespace HotelBooking.Business.Services.Channels
 {
-    public interface IEmailSender
+    internal interface IEmailSender
     {
         Task<bool> SendAsync(string to, string subject, string htmlBody, string? plainBody = null);
     }

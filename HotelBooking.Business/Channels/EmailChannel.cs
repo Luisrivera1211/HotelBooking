@@ -1,13 +1,13 @@
-﻿using System.Net;
-using System.Text;
-using HotelBooking.Business.DTOs.Notification;
+﻿using HotelBooking.Business.DTOs.Notification;
 using HotelBooking.Business.Interfaces;
 using HotelBooking.Data.Entities;
 using HotelBooking.Data.Enums;
+using System.Net;
+using System.Text;
 
-namespace HotelBooking.Web.Notifications
+namespace HotelBooking.Business.Services.Channels
 {
-    public class EmailChannel : INotificationChannel
+    internal class EmailChannel : INotificationChannel
     {
         private readonly IEmailSender _emailSender;
 
@@ -33,6 +33,7 @@ namespace HotelBooking.Web.Notifications
             }
         }
 
+        // Plantilla con CSS en línea y tablas (lo único que respetan Gmail y Outlook).
         private const string Template = """
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eef2f7" style="background:#eef2f7;">
 <tr><td align="center" style="padding:24px 12px;">

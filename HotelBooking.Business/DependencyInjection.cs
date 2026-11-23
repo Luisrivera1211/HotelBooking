@@ -1,5 +1,6 @@
 ﻿using HotelBooking.Business.Interfaces;
 using HotelBooking.Business.Services;
+using HotelBooking.Business.Services.Channels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HotelBooking.Business
@@ -18,6 +19,9 @@ namespace HotelBooking.Business
             services.AddScoped<IAvailabilityService, AvailabilityService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IReservationService, ReservationService>();
+            services.AddScoped<IEmailSender, SmtpEmailSender>();
+            services.AddScoped<INotificationChannel, EmailChannel>();
+
 
             return services;
         }
