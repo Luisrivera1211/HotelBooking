@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.DTOs.Availability;
+using HotelBooking.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
@@ -8,36 +8,25 @@ namespace HotelBooking.API.Controllers
     [ApiController]
     public class AvailabilityController : ControllerBase
     {
-        // GET: api/<AvailabilityController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IAvailabilityService _availabilityService;
+        private readonly ILogger<AvailabilityController> _logger;
+
+        public AvailabilityController(IAvailabilityService availabilityService, ILogger<AvailabilityController> logger)
         {
-            return new string[] { "value1", "value2" };
+            _availabilityService = availabilityService;
+            _logger = logger;
         }
 
-        // GET api/<AvailabilityController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpPost("Search")]
+        public async Task<IActionResult> Search([FromBody] AvailabilitySearchDto dto)
         {
-            return "value";
-        }
+            var result = await _availabilityService.SearchAsync(dto);
 
-        // POST api/<AvailabilityController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+            if (result.Success)
+                return Ok(result);
 
-        // PUT api/<AvailabilityController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<AvailabilityController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            _logger.LogError("Error searching availability: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }

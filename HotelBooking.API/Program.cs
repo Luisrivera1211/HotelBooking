@@ -1,32 +1,27 @@
-using HotelBooking.Data;
+using System.Text.Json.Serialization;
+using HotelBooking.API.Services;
 using HotelBooking.Business;
-
+using HotelBooking.Data;
+using HotelBooking.Data.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Falta ConnectionStrings:DefaultConnection.");
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddDataDependencies(builder.Configuration.GetConnectionString("DefaultConnection"));
+    ?? throw new InvalidOperationException("Falta ConnectionStrings:DefaultConnection en appsettings.");
 
 builder.Services.AddDataDependencies(connectionString);
 builder.Services.AddBusinessDependencies();
 
-builder.Services.AddControllers();
+builder.Services.AddScoped<ICurrentUser, ApiCurrentUser>();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -34,10 +29,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
-

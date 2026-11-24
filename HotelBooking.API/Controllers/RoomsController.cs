@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.DTOs.Room;
+using HotelBooking.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
@@ -8,36 +8,73 @@ namespace HotelBooking.API.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
-        // GET: api/<RoomsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IRoomService _roomService;
+        private readonly ILogger<RoomsController> _logger;
+
+        public RoomsController(IRoomService roomService, ILogger<RoomsController> logger)
         {
-            return new string[] { "value1", "value2" };
+            _roomService = roomService;
+            _logger = logger;
         }
 
-        // GET api/<RoomsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("ByFloor/{floorId:int}")]
+        public async Task<IActionResult> GetByFloor(int floorId)
         {
-            return "value";
+            var result = await _roomService.GetByFloorAsync(floorId);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching rooms: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // POST api/<RoomsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
         {
+            var result = await _roomService.GetByIdAsync(id);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching room: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // PUT api/<RoomsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("CreateRoom")]
+        public async Task<IActionResult> Post([FromBody] CreateRoomDto dto)
         {
+            var result = await _roomService.CreateAsync(dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error creating room: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // DELETE api/<RoomsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("ModifyRoom/{id:int}")]
+        public async Task<IActionResult> Put(int id, [FromBody] CreateRoomDto dto)
         {
+            var result = await _roomService.UpdateAsync(id, dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error modifying room: {ErrorMessage}", result.Message);
+            return BadRequest(result);
+        }
+
+        [HttpPost("ChangeRoomStatus/{id:int}")]
+        public async Task<IActionResult> ChangeStatus(int id, [FromBody] ChangeRoomStatusDto dto)
+        {
+            var result = await _roomService.ChangeStatusAsync(id, dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error changing room status: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }

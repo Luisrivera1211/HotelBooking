@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.DTOs.Reservation;
+using HotelBooking.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
@@ -8,36 +8,85 @@ namespace HotelBooking.API.Controllers
     [ApiController]
     public class ReservationsController : ControllerBase
     {
-        // GET: api/<ReservationsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IReservationService _reservationService;
+        private readonly ILogger<ReservationsController> _logger;
+
+        public ReservationsController(IReservationService reservationService, ILogger<ReservationsController> logger)
         {
-            return new string[] { "value1", "value2" };
+            _reservationService = reservationService;
+            _logger = logger;
         }
 
-        // GET api/<ReservationsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var result = await _reservationService.GetByIdAsync(id);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching reservation: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // POST api/<ReservationsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("ByGuest/{guestId:int}")]
+        public async Task<IActionResult> GetByGuest(int guestId)
         {
+            var result = await _reservationService.GetByGuestAsync(guestId);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching reservations by guest: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // PUT api/<ReservationsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("CreateReservation")]
+        public async Task<IActionResult> Post([FromBody] CreateReservationDto dto)
         {
+            var result = await _reservationService.CreateAsync(dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error creating reservation: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // DELETE api/<ReservationsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("ModifyReservation/{id:int}")]
+        public async Task<IActionResult> Put(int id, [FromBody] ModifyReservationDto dto)
         {
+            var result = await _reservationService.ModifyAsync(id, dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error modifying reservation: {ErrorMessage}", result.Message);
+            return BadRequest(result);
+        }
+
+        [HttpPost("ConfirmReservation/{id:int}")]
+        public async Task<IActionResult> Confirm(int id)
+        {
+            var result = await _reservationService.ConfirmAsync(id);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error confirming reservation: {ErrorMessage}", result.Message);
+            return BadRequest(result);
+        }
+
+        [HttpPost("CancelReservation/{id:int}")]
+        public async Task<IActionResult> Cancel(int id)
+        {
+            var result = await _reservationService.CancelAsync(id);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error cancelling reservation: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }

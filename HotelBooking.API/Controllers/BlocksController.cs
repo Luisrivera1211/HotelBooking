@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.DTOs.Block;
+using HotelBooking.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
@@ -8,36 +8,73 @@ namespace HotelBooking.API.Controllers
     [ApiController]
     public class BlocksController : ControllerBase
     {
-        // GET: api/<BlocksController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IBlockService _blockService;
+        private readonly ILogger<BlocksController> _logger;
+
+        public BlocksController(IBlockService blockService, ILogger<BlocksController> logger)
         {
-            return new string[] { "value1", "value2" };
+            _blockService = blockService;
+            _logger = logger;
         }
 
-        // GET api/<BlocksController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("ByHotel/{hotelId:int}")]
+        public async Task<IActionResult> GetByHotel(int hotelId)
         {
-            return "value";
+            var result = await _blockService.GetByHotelAsync(hotelId);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching blocks: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // POST api/<BlocksController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
         {
+            var result = await _blockService.GetByIdAsync(id);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching block: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // PUT api/<BlocksController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("CreateBlock")]
+        public async Task<IActionResult> Post([FromBody] CreateBlockDto dto)
         {
+            var result = await _blockService.CreateAsync(dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error creating block: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // DELETE api/<BlocksController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("ModifyBlock/{id:int}")]
+        public async Task<IActionResult> Put(int id, [FromBody] CreateBlockDto dto)
         {
+            var result = await _blockService.UpdateAsync(id, dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error modifying block: {ErrorMessage}", result.Message);
+            return BadRequest(result);
+        }
+
+        [HttpPost("SetBlockActive/{id:int}")]
+        public async Task<IActionResult> SetActive(int id, [FromQuery] bool isActive)
+        {
+            var result = await _blockService.SetActiveAsync(id, isActive);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error changing block state: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }

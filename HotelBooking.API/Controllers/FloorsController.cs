@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.DTOs.Floor;
+using HotelBooking.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
@@ -8,36 +8,61 @@ namespace HotelBooking.API.Controllers
     [ApiController]
     public class FloorsController : ControllerBase
     {
-        // GET: api/<FloorsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IFloorService _floorService;
+        private readonly ILogger<FloorsController> _logger;
+
+        public FloorsController(IFloorService floorService, ILogger<FloorsController> logger)
         {
-            return new string[] { "value1", "value2" };
+            _floorService = floorService;
+            _logger = logger;
         }
 
-        // GET api/<FloorsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("ByBlock/{blockId:int}")]
+        public async Task<IActionResult> GetByBlock(int blockId)
         {
-            return "value";
+            var result = await _floorService.GetByBlockAsync(blockId);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching floors: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // POST api/<FloorsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
         {
+            var result = await _floorService.GetByIdAsync(id);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching floor: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // PUT api/<FloorsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("CreateFloor")]
+        public async Task<IActionResult> Post([FromBody] CreateFloorDto dto)
         {
+            var result = await _floorService.CreateAsync(dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error creating floor: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // DELETE api/<FloorsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("SetFloorActive/{id:int}")]
+        public async Task<IActionResult> SetActive(int id, [FromQuery] bool isActive)
         {
+            var result = await _floorService.SetActiveAsync(id, isActive);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error changing floor state: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }

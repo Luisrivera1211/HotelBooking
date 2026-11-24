@@ -6,35 +6,35 @@ namespace HotelBooking.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuditController : ControllerBase
+    public class AvailabilityController : ControllerBase
     {
-        // GET: api/<AuditController>
+        // GET: api/<AvailabilityController>
         [HttpGet]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<AuditController>/5
+        // GET api/<AvailabilityController>/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST api/<AuditController>
+        // POST api/<AvailabilityController>
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT api/<AuditController>/5
+        // PUT api/<AvailabilityController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<AuditController>/5
+        // DELETE api/<AvailabilityController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

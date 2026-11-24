@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.DTOs.Employee;
+using HotelBooking.Business.DTOs.Guest;
+using HotelBooking.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
@@ -8,36 +9,97 @@ namespace HotelBooking.API.Controllers
     [ApiController]
     public class GuestsController : ControllerBase
     {
-        // GET: api/<GuestsController>
+        private readonly IGuestService _guestService;
+        private readonly ILogger<GuestsController> _logger;
+
+        public GuestsController(IGuestService guestService, ILogger<GuestsController> logger)
+        {
+            _guestService = guestService;
+            _logger = logger;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var result = await _guestService.GetAllAsync();
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching guests: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // GET api/<GuestsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var result = await _guestService.GetByIdAsync(id);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching guest: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // POST api/<GuestsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("ByDocument/{document}")]
+        public async Task<IActionResult> GetByDocument(string document)
         {
+            var result = await _guestService.GetByDocumentAsync(document);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching guest by document: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // PUT api/<GuestsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("CreateGuest")]
+        public async Task<IActionResult> Post([FromBody] CreateGuestDto dto)
         {
+            var result = await _guestService.CreateAsync(dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error creating guest: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // DELETE api/<GuestsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("ModifyGuest/{id:int}")]
+        public async Task<IActionResult> Put(int id, [FromBody] CreateGuestDto dto)
         {
+            var result = await _guestService.UpdateAsync(id, dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error modifying guest: {ErrorMessage}", result.Message);
+            return BadRequest(result);
+        }
+
+        [HttpPost("RegisterGuestAccount")]
+        public async Task<IActionResult> RegisterAccount([FromBody] RegisterGuestAccountDto dto)
+        {
+            var result = await _guestService.RegisterAccountAsync(dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error registering guest account: {ErrorMessage}", result.Message);
+            return BadRequest(result);
+        }
+
+        [HttpPost("LoginGuest")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            var result = await _guestService.LoginAsync(dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error guest login: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }

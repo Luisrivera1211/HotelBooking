@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.DTOs.Hotels;
+using HotelBooking.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
@@ -8,36 +8,73 @@ namespace HotelBooking.API.Controllers
     [ApiController]
     public class HotelsController : ControllerBase
     {
-        // GET: api/<HotelsController>
+        private readonly IHotelService _hotelService;
+        private readonly ILogger<HotelsController> _logger;
+
+        public HotelsController(IHotelService hotelService, ILogger<HotelsController> logger)
+        {
+            _hotelService = hotelService;
+            _logger = logger;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var result = await _hotelService.GetAllAsync();
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching hotels: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // GET api/<HotelsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var result = await _hotelService.GetByIdAsync(id);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching hotel: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // POST api/<HotelsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("CreateHotel")]
+        public async Task<IActionResult> Post([FromBody] CreateHotelDto dto)
         {
+            var result = await _hotelService.CreateAsync(dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error creating hotel: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // PUT api/<HotelsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("ModifyHotel/{id:int}")]
+        public async Task<IActionResult> Put(int id, [FromBody] CreateHotelDto dto)
         {
+            var result = await _hotelService.UpdateAsync(id, dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error modifying hotel: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // DELETE api/<HotelsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("SetHotelActive/{id:int}")]
+        public async Task<IActionResult> SetActive(int id, [FromQuery] bool isActive)
         {
+            var result = await _hotelService.SetActiveAsync(id, isActive);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error changing hotel state: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }

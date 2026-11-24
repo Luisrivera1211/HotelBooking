@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.Interfaces;
+using HotelBooking.Data.Enums;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
@@ -8,36 +8,37 @@ namespace HotelBooking.API.Controllers
     [ApiController]
     public class NotificationsController : ControllerBase
     {
-        // GET: api/<NotificationsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly INotificationService _notificationService;
+        private readonly ILogger<NotificationsController> _logger;
+
+        public NotificationsController(INotificationService notificationService, ILogger<NotificationsController> logger)
         {
-            return new string[] { "value1", "value2" };
+            _notificationService = notificationService;
+            _logger = logger;
         }
 
-        // GET api/<NotificationsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("ByReservation/{reservationId:int}")]
+        public async Task<IActionResult> GetByReservation(int reservationId)
         {
-            return "value";
+            var result = await _notificationService.GetByReservationAsync(reservationId);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching notifications: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // POST api/<NotificationsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("Notify/{reservationId:int}")]
+        public async Task<IActionResult> Notify(int reservationId, [FromQuery] NotificationType type)
         {
-        }
+            var result = await _notificationService.NotifyAsync(reservationId, type);
 
-        // PUT api/<NotificationsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            if (result.Success)
+                return Ok(result);
 
-        // DELETE api/<NotificationsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            _logger.LogError("Error sending notification: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }

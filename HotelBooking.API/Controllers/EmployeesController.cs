@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.DTOs.Employee;
+using HotelBooking.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
@@ -8,36 +8,37 @@ namespace HotelBooking.API.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        // GET: api/<EmployeesController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IEmployeeService _employeeService;
+        private readonly ILogger<EmployeesController> _logger;
+
+        public EmployeesController(IEmployeeService employeeService, ILogger<EmployeesController> logger)
         {
-            return new string[] { "value1", "value2" };
+            _employeeService = employeeService;
+            _logger = logger;
         }
 
-        // GET api/<EmployeesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpPost("RegisterEmployee")]
+        public async Task<IActionResult> Register([FromBody] RegisterEmployeeDto dto)
         {
-            return "value";
+            var result = await _employeeService.RegisterAsync(dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error registering employee: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // POST api/<EmployeesController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("LoginEmployee")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-        }
+            var result = await _employeeService.LoginAsync(dto);
 
-        // PUT api/<EmployeesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            if (result.Success)
+                return Ok(result);
 
-        // DELETE api/<EmployeesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            _logger.LogError("Error employee login: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }

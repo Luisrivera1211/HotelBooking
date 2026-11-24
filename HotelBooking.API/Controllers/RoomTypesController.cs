@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.DTOs.RoomType;
+using HotelBooking.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
@@ -8,36 +8,61 @@ namespace HotelBooking.API.Controllers
     [ApiController]
     public class RoomTypesController : ControllerBase
     {
-        // GET: api/<RoomTypesController>
+        private readonly IRoomTypeService _roomTypeService;
+        private readonly ILogger<RoomTypesController> _logger;
+
+        public RoomTypesController(IRoomTypeService roomTypeService, ILogger<RoomTypesController> logger)
+        {
+            _roomTypeService = roomTypeService;
+            _logger = logger;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var result = await _roomTypeService.GetAllAsync();
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching room types: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // GET api/<RoomTypesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var result = await _roomTypeService.GetByIdAsync(id);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching room type: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // POST api/<RoomTypesController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("CreateRoomType")]
+        public async Task<IActionResult> Post([FromBody] CreateRoomTypeDto dto)
         {
+            var result = await _roomTypeService.CreateAsync(dto);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error creating room type: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // PUT api/<RoomTypesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("ModifyRoomType/{id:int}")]
+        public async Task<IActionResult> Put(int id, [FromBody] CreateRoomTypeDto dto)
         {
-        }
+            var result = await _roomTypeService.UpdateAsync(id, dto);
 
-        // DELETE api/<RoomTypesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error modifying room type: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }
