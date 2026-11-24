@@ -1,43 +1,43 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using HotelBooking.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HotelBooking.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AvailabilityController : ControllerBase
+    public class AuditController : ControllerBase
     {
-        // GET: api/<AvailabilityController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IAuditService _auditService;
+        private readonly ILogger<AuditController> _logger;
+
+        public AuditController(IAuditService auditService, ILogger<AuditController> logger)
         {
-            return new string[] { "value1", "value2" };
+            _auditService = auditService;
+            _logger = logger;
         }
 
-        // GET api/<AvailabilityController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("Recent")]
+        public async Task<IActionResult> GetRecent([FromQuery] string? entityName, [FromQuery] int take = 200)
         {
-            return "value";
+            var result = await _auditService.GetRecentAsync(entityName, take);
+
+            if (result.Success)
+                return Ok(result);
+
+            _logger.LogError("Error fetching audit logs: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
 
-        // POST api/<AvailabilityController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("ByEntity/{entityName}/{entityId:int}")]
+        public async Task<IActionResult> GetByEntity(string entityName, int entityId)
         {
-        }
+            var result = await _auditService.GetByEntityAsync(entityName, entityId);
 
-        // PUT api/<AvailabilityController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            if (result.Success)
+                return Ok(result);
 
-        // DELETE api/<AvailabilityController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            _logger.LogError("Error fetching audit history: {ErrorMessage}", result.Message);
+            return BadRequest(result);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using HotelBooking.Data.Interfaces;
 
-namespace HotelBooking.API.Services
+namespace HotelBooking.API.Helpers
 {
     public class ApiCurrentUser : ICurrentUser
     {
