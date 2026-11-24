@@ -1,6 +1,11 @@
 using HotelBooking.Data;
+using HotelBooking.Business;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Falta ConnectionStrings:DefaultConnection.");
 
 // Add services to the container.
 
@@ -9,6 +14,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDataDependencies(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+builder.Services.AddDataDependencies(connectionString);
+builder.Services.AddBusinessDependencies();
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 
 
 var app = builder.Build();
@@ -27,3 +40,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
