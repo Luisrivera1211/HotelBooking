@@ -1,8 +1,11 @@
 using HotelBooking.Business;
 using HotelBooking.Data;
+using HotelBooking.Data.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HotelBooking.Data.Interfaces;
+using HotelBooking.Web.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,8 @@ builder.Services.AddControllersWithViews(options =>
 
 builder.Services.AddDataDependencies(connectionString);
 builder.Services.AddBusinessDependencies();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
