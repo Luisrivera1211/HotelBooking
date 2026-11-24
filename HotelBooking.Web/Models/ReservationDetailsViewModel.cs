@@ -1,3 +1,4 @@
+using HotelBooking.Business.DTOs.Audit;
 using HotelBooking.Business.DTOs.Notification;
 using HotelBooking.Business.DTOs.Reservation;
 
@@ -7,5 +8,6 @@ namespace HotelBooking.Web.Models
     {
         public ReservationDto Reservation { get; set; } = new();
         public List<NotificationDto> Notifications { get; set; } = new();
+        public List<AuditLogDto> History { get; set; } = new();
     }
 }

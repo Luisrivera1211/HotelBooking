@@ -33,7 +33,6 @@ namespace HotelBooking.Business.Services.Channels
             }
         }
 
-        // Plantilla con CSS en línea y tablas (lo único que respetan Gmail y Outlook).
         private const string Template = """
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eef2f7" style="background:#eef2f7;">
 <tr><td align="center" style="padding:24px 12px;">
