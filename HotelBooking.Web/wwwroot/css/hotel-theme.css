@@ -1,13 +1,14 @@
-﻿:root {
-    --linen: #F3ECDF; 
-    --parchment: #FBF7EF; 
-    --sand: #DDD0B8; 
-    --ink: #2E2924; 
-    --taupe: #6F6557; 
-    --pine: #2F4A3F; 
+﻿/* HotelBooking - tema beige. Cargar DESPUES de Bootstrap. */
+:root {
+    --linen: #F3ECDF; /* fondo de pagina */
+    --parchment: #FBF7EF; /* tarjetas, tablas, campos */
+    --sand: #DDD0B8; /* bordes */
+    --ink: #2E2924; /* texto */
+    --taupe: #6F6557; /* texto secundario */
+    --pine: #2F4A3F; /* color principal */
     --pine-dark: #243A31;
-    --brass: #A5864A; 
-    --brick: #8F3B2E; 
+    --brass: #A5864A; /* solo detalles y lineas, nunca texto */
+    --brick: #8F3B2E; /* errores y acciones destructivas */
 
     --bs-body-bg: var(--linen);
     --bs-body-color: var(--ink);
@@ -27,6 +28,7 @@
     --bs-link-hover-color-rgb: 36, 58, 49;
 }
 
+/* Estructura de pagina */
 .app-body {
     min-height: 100vh;
     display: flex;
@@ -46,6 +48,7 @@
     margin-top: 3rem;
 }
 
+/* Tipografia */
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: 'Spectral', Georgia, 'Times New Roman', serif;
     font-weight: 500;
@@ -61,6 +64,7 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
     outline-offset: 2px;
 }
 
+/* Barra de navegacion: un solo detalle en laton */
 .app-nav {
     background: var(--parchment);
     border-bottom: 2px solid var(--brass);
@@ -89,6 +93,7 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
         color: var(--ink);
     }
 
+/* Tarjetas */
 .card {
     --bs-card-bg: var(--parchment);
     --bs-card-border-color: var(--sand);
@@ -103,6 +108,7 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
     box-shadow: 0 1px 2px rgba(46, 41, 36, .08) !important;
 }
 
+/* Botones */
 .btn {
     --bs-btn-border-radius: .375rem;
     font-weight: 500;
@@ -162,6 +168,7 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
     --bs-btn-hover-color: var(--pine-dark);
 }
 
+/* Tablas: la linea de laton separa el encabezado */
 .table.table-striped {
     --bs-table-bg: var(--parchment);
     --bs-table-striped-bg: #F5EEE1;
@@ -180,6 +187,7 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
     border-bottom: 2px solid var(--brass);
 }
 
+/* Formularios */
 .form-label {
     font-weight: 500;
 }
@@ -200,6 +208,7 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
     border-color: var(--pine);
 }
 
+/* Avisos */
 .alert-success {
     --bs-alert-color: #243A31;
     --bs-alert-bg: #E6EDE5;
@@ -216,6 +225,7 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
     font-weight: 500;
 }
 
+/* Tarjetas de hotel y habitacion (Tanda 3) */
 .hotel-head {
     background: var(--pine);
     color: #fff;
@@ -230,6 +240,7 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
     color: #D9BF86;
     letter-spacing: 2px;
 }
+/* laton claro, legible sobre el verde */
 .card-footer {
     background: var(--parchment);
 }
@@ -247,3 +258,39 @@ a.text-decoration-none .card {
     a.text-decoration-none .card:hover {
         box-shadow: 0 4px 12px rgba(46, 41, 36, .15) !important;
     }
+
+/* Panel de inicio */
+.welcome-hero {
+    background: var(--pine);
+    color: var(--parchment);
+    border-radius: .5rem;
+    border-bottom: 3px solid var(--brass);
+    padding: 2rem;
+}
+
+    .welcome-hero h1 {
+        color: #fff;
+        font-size: 2rem;
+        margin-bottom: .25rem;
+    }
+
+    .welcome-hero p {
+        color: #DCE5DD;
+        margin: 0;
+    }
+
+    .welcome-hero .btn-light {
+        --bs-btn-bg: var(--parchment);
+        --bs-btn-border-color: var(--parchment);
+        --bs-btn-color: var(--pine);
+        --bs-btn-hover-bg: #fff;
+        --bs-btn-hover-border-color: #fff;
+        --bs-btn-hover-color: var(--pine-dark);
+    }
+
+.stat-value {
+    font-family: 'Spectral', Georgia, serif;
+    font-size: 2.25rem;
+    line-height: 1;
+    color: var(--pine);
+}

@@ -1,27 +1,40 @@
-@model RoomTypeFormViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model RoomFormViewModel
 @{
     var isEdit = Model.Id.HasValue;
     var formAction = isEdit ? "Edit" : "Create";
-    var title = isEdit ? "Editar tipo de habitación" : "Nuevo tipo de habitación";
+    var title = isEdit ? "Editar habitación" : "Nueva habitación";
 }
 <h1 class="h3 mb-3">@title</h1>
 <form asp-action="@formAction" asp-route-id="@Model.Id" method="post" class="card card-body shadow-sm" style="max-width:600px">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <input asp-for="FloorId" type="hidden" />
     <div class="mb-3">
-        <label asp-for="Name" class="form-label">Nombre</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+        <label asp-for="Number" class="form-label">Número de habitación</label>
+        <input asp-for="Number" class="form-control" />
+        <span asp-validation-for="Number" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Capacity" class="form-label">Capacidad (huéspedes)</label>
-        <input asp-for="Capacity" class="form-control" type="number" min="1" />
-        <span asp-validation-for="Capacity" class="text-danger"></span>
+        <label asp-for="RoomTypeId" class="form-label">Tipo de habitación</label>
+        <select asp-for="RoomTypeId" class="form-select" asp-items="Model.RoomTypes">
+            <option value="0">-- Seleccione --</option>
+        </select>
+        <span asp-validation-for="RoomTypeId" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="RatePerNight" class="form-label">Tarifa por noche</label>
-        <input asp-for="RatePerNight" class="form-control" type="number" step="0.01" min="0" />
-        <span asp-validation-for="RatePerNight" class="text-danger"></span>
+        <label asp-for="Description" class="form-label">Descripción breve</label>
+        <textarea asp-for="Description" class="form-control" rows="2" maxlength="300"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+        <div class="form-text">Se muestra al cliente al pasar el mouse sobre la habitación.</div>
     </div>
-    <div><button class="btn btn-primary">Guardar</button> <a asp-action="Index" class="btn btn-link">Cancelar</a></div>
+    <div class="mb-3">
+        <label asp-for="Features" class="form-label">Características</label>
+        <input asp-for="Features" class="form-control" maxlength="300" placeholder="Wi-Fi, Aire acondicionado, Vista al mar" />
+        <span asp-validation-for="Features" class="text-danger"></span>
+        <div class="form-text">Sepárelas con comas.</div>
+    </div>
+    <div><button class="btn btn-primary">Guardar</button> <a asp-action="Index" asp-route-floorId="@Model.FloorId" class="btn btn-link">Cancelar</a></div>
 </form>
-@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,10 +1,11 @@
 @model RoomTypeFormViewModel
 @{
-    var formAction = ViewData["FormAction"]?.ToString() ?? "Create";
-    var formId = ViewData["Id"]?.ToString();
+    var isEdit = Model.Id.HasValue;
+    var formAction = isEdit ? "Edit" : "Create";
+    var title = isEdit ? "Editar tipo de habitación" : "Nuevo tipo de habitación";
 }
-<h1 class="h3 mb-3">@ViewData["Title"]</h1>
-<form asp-action="@formAction" asp-route-id="@formId" method="post" class="card card-body shadow-sm" style="max-width:600px">
+<h1 class="h3 mb-3">@title</h1>
+<form asp-action="@formAction" asp-route-id="@Model.Id" method="post" class="card card-body shadow-sm" style="max-width:600px">
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
     <div class="mb-3">
         <label asp-for="Name" class="form-label">Nombre</label>
@@ -18,9 +19,11 @@
     </div>
     <div class="mb-3">
         <label asp-for="RatePerNight" class="form-label">Tarifa por noche</label>
-        <div class="input-group"><span class="input-group-text">RD$</span><input asp-for="RatePerNight" class="form-control" type="number" step="0.01" min="0" /></div>
+        <input asp-for="RatePerNight" class="form-control" type="number" step="0.01" min="0" />
         <span asp-validation-for="RatePerNight" class="text-danger"></span>
     </div>
     <div><button class="btn btn-primary">Guardar</button> <a asp-action="Index" class="btn btn-link">Cancelar</a></div>
 </form>
-@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
