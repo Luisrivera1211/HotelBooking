@@ -7,12 +7,12 @@
 @foreach (var h in Model.Hotels)
 {
     var selected = h.Id == Model.Search.HotelId;
-    var border = selected ? "border-primary border-3" : "border-0";
+    var border = selected ? "border-primary border-3" : "";
     <div class="col">
         <a asp-action="Index" asp-route-hotelId="@h.Id" class="text-decoration-none">
             <div class="card h-100 shadow-sm @border">
-                <div class="p-3 text-white" style="background:linear-gradient(135deg,#0f172a,#1d4ed8)">
-                    <div class="text-warning" title="@h.Stars estrellas">@UiHelpers.Stars(h.Stars)</div>
+                <div class="hotel-head p-3">
+                    <div class="hotel-stars" title="@h.Stars estrellas">@UiHelpers.Stars(h.Stars)</div>
                     <div class="h5 mb-0">@h.Name</div>
                 </div>
                 <div class="card-body py-2">
@@ -89,7 +89,7 @@
             var tip = string.IsNullOrWhiteSpace(r.Description) ? null : r.Description;
             var toggle = tip is null ? null : "tooltip";
             <div class="col">
-                <div class="card h-100 shadow-sm border-0" data-bs-toggle="@toggle" data-bs-title="@tip" data-bs-placement="top">
+                <div class="card h-100 shadow-sm" data-bs-toggle="@toggle" data-bs-title="@tip" data-bs-placement="top">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
@@ -109,7 +109,7 @@
                             }
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-0">
+                    <div class="card-footer border-0">
                         <a asp-controller="Reservations" asp-action="Create"
                            asp-route-roomId="@r.Id"
                            asp-route-checkIn="@Model.Search.CheckIn.ToString("yyyy-MM-dd")"
@@ -126,6 +126,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+        // Descripción breve de la habitación al pasar el mouse
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) { new bootstrap.Tooltip(el); });
     </script>
 }

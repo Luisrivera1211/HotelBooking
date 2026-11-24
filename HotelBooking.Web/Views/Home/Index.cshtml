@@ -1,6 +1,6 @@
 @if (User.Identity?.IsAuthenticated != true)
 {
-    <div class="p-4 p-md-5 mb-4 bg-white rounded-3 shadow-sm text-center">
+    <div class="card app-card p-4 p-md-5 mb-4 shadow-sm text-center">
         <h1 class="display-6">Encuentre su habitación</h1>
         <p class="lead text-muted">Busque entre nuestros hoteles sin necesidad de cuenta. La cuenta solo se pide al reservar.</p>
         <a asp-controller="Availability" asp-action="Index" class="btn btn-primary btn-lg">Buscar habitaciones</a>
@@ -15,7 +15,7 @@ else
     <h1 class="h3 mb-4">Bienvenido, @User.Identity!.Name</h1>
     <div class="row g-3">
         <div class="col-md-4">
-            <div class="card h-100"><div class="card-body">
+            <div class="card h-100 app-card"><div class="card-body">
                 <h2 class="h5">Disponibilidad</h2>
                 <p class="text-muted">Busque habitaciones libres por fechas y cree la reserva.</p>
                 <a asp-controller="Availability" asp-action="Index" class="btn btn-primary">Buscar</a>
@@ -24,7 +24,7 @@ else
         @if (User.IsGuest())
         {
             <div class="col-md-4">
-                <div class="card h-100"><div class="card-body">
+                <div class="card h-100 app-card"><div class="card-body">
                     <h2 class="h5">Mis reservas</h2>
                     <p class="text-muted">Consulte, modifique o cancele sus reservas.</p>
                     <a asp-controller="Reservations" asp-action="Mine" class="btn btn-primary">Ver mis reservas</a>
@@ -34,7 +34,7 @@ else
         else
         {
             <div class="col-md-4">
-                <div class="card h-100"><div class="card-body">
+                <div class="card h-100 app-card"><div class="card-body">
                     <h2 class="h5">Huéspedes</h2>
                     <p class="text-muted">Registre huéspedes y consulte sus reservas.</p>
                     <a asp-controller="Guests" asp-action="Index" class="btn btn-primary">Ver huéspedes</a>
@@ -44,7 +44,7 @@ else
         @if (User.IsInRole(Roles.Administrator))
         {
             <div class="col-md-4">
-                <div class="card h-100"><div class="card-body">
+                <div class="card h-100 app-card"><div class="card-body">
                     <h2 class="h5">Administración</h2>
                     <p class="text-muted">Hoteles, bloques, pisos, habitaciones y tipos.</p>
                     <a asp-controller="Hotels" asp-action="Index" class="btn btn-dark">Hoteles</a>

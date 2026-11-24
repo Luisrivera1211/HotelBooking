@@ -1,7 +1,7 @@
 @model RegisterViewModel
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm app-card">
             <div class="card-body">
                 <h1 class="h4 mb-3">Crear cuenta</h1>
                 <form asp-action="Register" method="post">
@@ -46,6 +46,7 @@
 </div>
 @section Scripts {
     <script>
+        // Las opciones del select tienen valor numérico: se compara el TEXTO ("Administrator")
         const role = document.getElementById('Role');
         const box = document.getElementById('adminCodeBox');
         function toggle() { box.style.display = role.options[role.selectedIndex].text === 'Administrator' ? '' : 'none'; }

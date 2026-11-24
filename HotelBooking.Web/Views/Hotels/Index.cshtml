@@ -12,16 +12,16 @@
 {
     var cardStyle = h.IsActive ? "" : "opacity:.65";
     <div class="col">
-        <div class="card h-100 shadow-sm border-0 overflow-hidden" style="@cardStyle">
-            <div class="p-4 text-white" style="background:linear-gradient(135deg,#0f172a,#1d4ed8)">
-                <div class="text-warning fs-5" title="@h.Stars estrellas">@UiHelpers.Stars(h.Stars)</div>
+        <div class="card h-100 shadow-sm overflow-hidden" style="@cardStyle">
+            <div class="hotel-head p-4">
+                <div class="hotel-stars fs-5" title="@h.Stars estrellas">@UiHelpers.Stars(h.Stars)</div>
                 <h2 class="h4 mb-0">@h.Name</h2>
             </div>
             <div class="card-body">
                 <p class="text-muted mb-2">@h.Address</p>
                 <span class="badge bg-@(h.IsActive ? "success" : "secondary")">@(h.IsActive ? "Activo" : "Inactivo")</span>
             </div>
-            <div class="card-footer bg-white border-0 d-flex flex-wrap gap-2">
+            <div class="card-footer border-0 d-flex flex-wrap gap-2">
                 <a asp-controller="Blocks" asp-action="Index" asp-route-hotelId="@h.Id" class="btn btn-sm btn-outline-dark">Bloques</a>
                 <a asp-action="Edit" asp-route-id="@h.Id" class="btn btn-sm btn-outline-primary">Editar</a>
                 <form asp-action="SetActive" method="post" class="d-inline">
